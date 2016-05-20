@@ -1,0 +1,10 @@
+nidata.anatomical.oasis_vbm package
+===================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.anatomical.oasis_vbm
+    :members:
+    :undoc-members:
+    :show-inheritance:

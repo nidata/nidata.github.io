@@ -1,0 +1,10 @@
+nidata.atlas.harvard_oxford package
+===================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.atlas.harvard_oxford
+    :members:
+    :undoc-members:
+    :show-inheritance:

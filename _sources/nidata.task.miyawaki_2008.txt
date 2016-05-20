@@ -1,0 +1,10 @@
+nidata.task.miyawaki_2008 package
+=================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.task.miyawaki_2008
+    :members:
+    :undoc-members:
+    :show-inheritance:

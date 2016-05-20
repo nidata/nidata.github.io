@@ -1,0 +1,10 @@
+nidata.localizer.brainomics package
+===================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.localizer.brainomics
+    :members:
+    :undoc-members:
+    :show-inheritance:

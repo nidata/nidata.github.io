@@ -1,0 +1,10 @@
+nidata.atlas.haxby_etal_2011 package
+====================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.atlas.haxby_etal_2011
+    :members:
+    :undoc-members:
+    :show-inheritance:

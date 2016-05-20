@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>nidata.diffusion &mdash; nidata  documentation</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+
+<link rel="stylesheet" href="../../_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" id="current-theme" href="../../_static/css/bootstrap3/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" id="current-adjust-theme" type="text/css" />
+
+<link rel="stylesheet" href="../../_static/css/font-awesome.min.css">
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+</style>
+
+<link rel="stylesheet" href="../../_static/css/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    '../../',
+            VERSION:     '',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+    <script type="text/javascript" src="../../_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/js/bootstrap3.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="../../_static/js/basicstrap.js"></script>
+<script type="text/javascript">
+</script>
+    <link rel="top" title="nidata  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div id="navbar-top" class="navbar navbar-fixed-top navbar-inverse" role="navigation" aria-label="top navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">nidata  documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+            
+              <li><a href="../../py-modindex.html" title="Python Module Index" >modules </a></li>
+              <li><a href="../../genindex.html" title="General Index" accesskey="I">index </a></li>
+              <li><a href="../index.html" accesskey="U">Module code</a></li>
+            
+
+            <li class="visible-xs">
+                <form class="search form-search form-inline navbar-form navbar-right sp-searchbox" action="../../search.html" method="get">
+                  <div class="input-append input-group">
+                    <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+                    <span class="input-group-btn">
+                    <input type="submit" class="btn" value="Go" />
+                    </span>
+                  </div>
+                  <input type="hidden" name="check_keywords" value="yes" />
+                  <input type="hidden" name="area" value="default" />
+                </form>
+            </li>
+
+            
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+      <!-- row -->
+      <div class="row">
+        
+        
+
+        <div class="col-md-9" id="content-wrapper">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <h1>Source code for nidata.diffusion</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">urllib2</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span> <span class="k">as</span> <span class="n">pjoin</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copyfileobj</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">nibabel</span> <span class="kn">as</span> <span class="nn">nib</span>
+
+
+<div class="viewcode-block" id="FetcherError"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.FetcherError">[docs]</a><span class="k">class</span> <span class="nc">FetcherError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<span class="k">def</span> <span class="nf">_log</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+<span class="n">dipy_home</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">),</span> <span class="s">&#39;.dipy&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="fetch_data"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_data">[docs]</a><span class="k">def</span> <span class="nf">fetch_data</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Downloads files to folder and checks their md5 checksums</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files : dictionary</span>
+<span class="sd">        For each file in `files` the value should be (url, md5). The file will</span>
+<span class="sd">        be downloaded from url if the file does not already exist or if the</span>
+<span class="sd">        file exists but the md5 checksum does not match.</span>
+<span class="sd">    folder : str</span>
+<span class="sd">        The directory where to save the file, the directory will be created if</span>
+<span class="sd">        it does not already exist.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    FetcherError</span>
+<span class="sd">        Raises if the md5 checksum of the file does not match the expected</span>
+<span class="sd">        value. The downloaded file is not deleted when this error is raised.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+        <span class="n">_log</span><span class="p">(</span><span class="s">&quot;Creating new folder </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">folder</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+
+    <span class="n">all_skip</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="n">url</span><span class="p">,</span> <span class="n">md5</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+        <span class="n">fullpath</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_get_file_md5</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span> <span class="o">==</span> <span class="n">md5</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">all_skip</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">_log</span><span class="p">(</span><span class="s">&#39;Downloading &quot;</span><span class="si">%s</span><span class="s">&quot; to </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">folder</span><span class="p">))</span>
+        <span class="n">_get_file_data</span><span class="p">(</span><span class="n">fullpath</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_get_file_md5</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span> <span class="o">!=</span> <span class="n">md5</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;The downloaded file, </span><span class="si">%s</span><span class="s">, does not have the expected md5</span>
+<span class="s">checksum of &quot;</span><span class="si">%s</span><span class="s">&quot;. This could mean that that something is wrong with the file or</span>
+<span class="s">that the upstream file has been updated. You can try downloading the file again</span>
+<span class="s">or updating to the newest version of dipy.&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fullpath</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">FetcherError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">all_skip</span><span class="p">:</span>
+        <span class="n">_log</span><span class="p">(</span><span class="s">&quot;All files already in </span><span class="si">%s</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">folder</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_log</span><span class="p">(</span><span class="s">&quot;Files successfully downloaded to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">folder</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="fetch_scil_b0"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_scil_b0">[docs]</a><span class="k">def</span> <span class="nf">fetch_scil_b0</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Download b=0 datasets from multiple MR systems (GE, Philips, Siemens) and</span>
+<span class="sd">        different magnetic fields (1.5T and 3T)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">zipname</span> <span class="o">=</span> <span class="s">&#39;datasets_multi-site_all_companies&#39;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://scil.dinf.usherbrooke.ca/wp-content/data/&#39;</span>
+    <span class="n">uraw</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="n">zipname</span> <span class="o">+</span> <span class="s">&#39;.zip&#39;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="n">zipname</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Creating new directory </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Downloading SCIL b=0 datasets from multiple sites and multiple companies (9.2MB)...&#39;</span><span class="p">)</span>
+        <span class="n">opener</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">uraw</span><span class="p">)</span>
+        <span class="nb">open</span><span class="p">(</span><span class="n">folder</span><span class="o">+</span><span class="s">&#39;.zip&#39;</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">opener</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Unziping &#39;</span><span class="o">+</span><span class="n">folder</span><span class="o">+</span><span class="s">&#39;.zip ...&#39;</span><span class="p">)</span>
+        <span class="nb">zip</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">folder</span><span class="o">+</span><span class="s">&#39;.zip&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="nb">zip</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">dipy_home</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset already in place. If you want to fetch again please first remove folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">dipy_home</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_scil_b0"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_scil_b0">[docs]</a><span class="k">def</span> <span class="nf">read_scil_b0</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Load GE 3T b0 image form the scil b0 dataset.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    img : obj,</span>
+<span class="sd">        Nifti1Image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">file</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span>
+                 <span class="s">&#39;datasets_multi-site_all_companies&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;3T&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;GE&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;b0.nii.gz&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_siemens_scil_b0"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_siemens_scil_b0">[docs]</a><span class="k">def</span> <span class="nf">read_siemens_scil_b0</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Load Siemens 1.5T b0 image form the scil b0 dataset.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    img : obj,</span>
+<span class="sd">        Nifti1Image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">file</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span>
+                 <span class="s">&#39;datasets_multi-site_all_companies&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;1.5T&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;Siemens&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;b0.nii.gz&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_file_md5</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the md5 checksum of a file&quot;&quot;&quot;</span>
+    <span class="n">md5_data</span> <span class="o">=</span> <span class="n">md5</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">128</span><span class="o">*</span><span class="n">md5_data</span><span class="o">.</span><span class="n">block_size</span><span class="p">),</span> <span class="n">b</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">md5_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">md5_data</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="check_md5"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.check_md5">[docs]</a><span class="k">def</span> <span class="nf">check_md5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">stored_md5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the md5 of filename and check if it matches with the supplied string md5</span>
+
+<span class="sd">    Input</span>
+<span class="sd">    -----</span>
+<span class="sd">    filename : string</span>
+<span class="sd">        Path to a file.</span>
+<span class="sd">    md5 : string</span>
+<span class="sd">        Known md5 of filename to check against.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">computed_md5</span> <span class="o">=</span> <span class="n">_get_file_md5</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stored_md5</span> <span class="o">!=</span> <span class="n">computed_md5</span><span class="p">:</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s">&quot;MD5 checksum of filename&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="s">&quot;failed. Expected MD5 was&quot;</span><span class="p">,</span> <span class="n">stored_md5</span><span class="p">,</span>
+               <span class="s">&quot;but computed MD5 was&quot;</span><span class="p">,</span> <span class="n">computed_md5</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span>
+               <span class="s">&quot;Please check if the data has been downloaded correctly or if the upstream data has changed.&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_file_data</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">))</span> <span class="k">as</span> <span class="n">opener</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">copyfileobj</span><span class="p">(</span><span class="n">opener</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="fetch_isbi2013_2shell"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_isbi2013_2shell">[docs]</a><span class="k">def</span> <span class="nf">fetch_isbi2013_2shell</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Download a 2-shell software phantom dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://dl.dropboxusercontent.com/u/2481924/isbi2013_merlet/&#39;</span>
+    <span class="n">uraw</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;2shells-1500-2500-N64-SNR-30.nii.gz&#39;</span>
+    <span class="n">ubval</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;2shells-1500-2500-N64.bval&#39;</span>
+    <span class="n">ubvec</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;2shells-1500-2500-N64.bvec&#39;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;isbi2013&#39;</span><span class="p">)</span>
+
+    <span class="n">md5_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;42911a70f232321cf246315192d69c42&#39;</span><span class="p">,</span> <span class="c"># data</span>
+                <span class="s">&#39;90e8cf66e0f4d9737a3b3c0da24df5ea&#39;</span><span class="p">,</span> <span class="c"># bval</span>
+                <span class="s">&#39;4b7aa2757a1ccab140667b76e8075cb1&#39;</span><span class="p">]</span> <span class="c"># bvec</span>
+
+    <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">uraw</span><span class="p">,</span> <span class="n">ubval</span><span class="p">,</span> <span class="n">ubvec</span><span class="p">]</span>
+    <span class="n">fname_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;phantom64.nii.gz&#39;</span><span class="p">,</span> <span class="s">&#39;phantom64.bval&#39;</span><span class="p">,</span> <span class="s">&#39;phantom64.bvec&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Creating new directory </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Downloading raw 2-shell synthetic data (20MB)...&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">md5_list</span><span class="p">)):</span>
+            <span class="n">_get_file_data</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">url_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">check_md5</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">md5_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_isbi2013_2shell"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_isbi2013_2shell">[docs]</a><span class="k">def</span> <span class="nf">read_isbi2013_2shell</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Load ISBI 2013 2-shell synthetic dataset</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    img : obj,</span>
+<span class="sd">        Nifti1Image</span>
+<span class="sd">    gtab : obj,</span>
+<span class="sd">        GradientTable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;isbi2013&#39;</span><span class="p">)</span>
+    <span class="n">fraw</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;phantom64.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">fbval</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;phantom64.bval&#39;</span><span class="p">)</span>
+    <span class="n">fbvec</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;phantom64.bvec&#39;</span><span class="p">)</span>
+
+    <span class="n">md5_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="s">&#39;42911a70f232321cf246315192d69c42&#39;</span><span class="p">,</span>
+                <span class="s">&#39;bval&#39;</span><span class="p">:</span> <span class="s">&#39;90e8cf66e0f4d9737a3b3c0da24df5ea&#39;</span><span class="p">,</span>
+                <span class="s">&#39;bvec&#39;</span><span class="p">:</span> <span class="s">&#39;4b7aa2757a1ccab140667b76e8075cb1&#39;</span><span class="p">}</span>
+
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fbval</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;bval&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fbvec</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;bvec&#39;</span><span class="p">])</span>
+
+    <span class="kn">from</span> <span class="nn">dipy.io.gradients</span> <span class="kn">import</span> <span class="n">read_bvals_bvecs</span>
+    <span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span> <span class="o">=</span> <span class="n">read_bvals_bvecs</span><span class="p">(</span><span class="n">fbval</span><span class="p">,</span> <span class="n">fbvec</span><span class="p">)</span>
+
+    <span class="kn">from</span> <span class="nn">dipy.core.gradients</span> <span class="kn">import</span> <span class="n">gradient_table</span>
+    <span class="n">gtab</span> <span class="o">=</span> <span class="n">gradient_table</span><span class="p">(</span><span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span></div>
+
+
+<div class="viewcode-block" id="fetch_sherbrooke_3shell"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_sherbrooke_3shell">[docs]</a><span class="k">def</span> <span class="nf">fetch_sherbrooke_3shell</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Download a 3shell HARDI dataset with 192 gradient directions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://dl.dropboxusercontent.com/u/2481924/sherbrooke_data/&#39;</span>
+    <span class="n">uraw</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;3shells-1000-2000-3500-N193.nii.gz&#39;</span>
+    <span class="n">ubval</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;3shells-1000-2000-3500-N193.bval&#39;</span>
+    <span class="n">ubvec</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;3shells-1000-2000-3500-N193.bvec&#39;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;sherbrooke_3shell&#39;</span><span class="p">)</span>
+
+    <span class="n">md5_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;0b735e8f16695a37bfbd66aab136eb66&#39;</span><span class="p">,</span> <span class="c"># data</span>
+                <span class="s">&#39;e9b9bb56252503ea49d31fb30a0ac637&#39;</span><span class="p">,</span> <span class="c"># bval</span>
+                <span class="s">&#39;0c83f7e8b917cd677ad58a078658ebb7&#39;</span><span class="p">]</span> <span class="c"># bvec</span>
+
+    <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">uraw</span><span class="p">,</span> <span class="n">ubval</span><span class="p">,</span> <span class="n">ubvec</span><span class="p">]</span>
+    <span class="n">fname_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;HARDI193.nii.gz&#39;</span><span class="p">,</span> <span class="s">&#39;HARDI193.bval&#39;</span><span class="p">,</span> <span class="s">&#39;HARDI193.bvec&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Creating new directory </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Downloading raw 3-shell data (184MB)...&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">md5_list</span><span class="p">)):</span>
+            <span class="n">_get_file_data</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">url_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">check_md5</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">md5_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_sherbrooke_3shell"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_sherbrooke_3shell">[docs]</a><span class="k">def</span> <span class="nf">read_sherbrooke_3shell</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Load Sherbrooke 3-shell HARDI dataset</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    img : obj,</span>
+<span class="sd">        Nifti1Image</span>
+<span class="sd">    gtab : obj,</span>
+<span class="sd">        GradientTable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;sherbrooke_3shell&#39;</span><span class="p">)</span>
+    <span class="n">fraw</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;HARDI193.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">fbval</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;HARDI193.bval&#39;</span><span class="p">)</span>
+    <span class="n">fbvec</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;HARDI193.bvec&#39;</span><span class="p">)</span>
+    <span class="n">md5_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="s">&#39;0b735e8f16695a37bfbd66aab136eb66&#39;</span><span class="p">,</span>
+                <span class="s">&#39;bval&#39;</span><span class="p">:</span> <span class="s">&#39;e9b9bb56252503ea49d31fb30a0ac637&#39;</span><span class="p">,</span>
+                <span class="s">&#39;bvec&#39;</span><span class="p">:</span> <span class="s">&#39;0c83f7e8b917cd677ad58a078658ebb7&#39;</span><span class="p">}</span>
+
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fbval</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;bval&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fbvec</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;bvec&#39;</span><span class="p">])</span>
+
+    <span class="kn">from</span> <span class="nn">dipy.io.gradients</span> <span class="kn">import</span> <span class="n">read_bvals_bvecs</span>
+    <span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span> <span class="o">=</span> <span class="n">read_bvals_bvecs</span><span class="p">(</span><span class="n">fbval</span><span class="p">,</span> <span class="n">fbvec</span><span class="p">)</span>
+
+    <span class="kn">from</span> <span class="nn">dipy.core.gradients</span> <span class="kn">import</span> <span class="n">gradient_table</span>
+    <span class="n">gtab</span> <span class="o">=</span> <span class="n">gradient_table</span><span class="p">(</span><span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span></div>
+
+
+<div class="viewcode-block" id="fetch_stanford_labels"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_stanford_labels">[docs]</a><span class="k">def</span> <span class="nf">fetch_stanford_labels</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Download reduced freesurfer aparc image from stanford web site.&quot;&quot;&quot;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;stanford_hardi&#39;</span><span class="p">)</span>
+    <span class="n">baseurl</span> <span class="o">=</span> <span class="s">&#39;https://stacks.stanford.edu/file/druid:yx282xq2090/&#39;</span>
+
+    <span class="n">files</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">files</span><span class="p">[</span><span class="s">&quot;aparc-reduced.nii.gz&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;aparc-reduced.nii.gz&quot;</span><span class="p">,</span>
+                                     <span class="s">&#39;742de90090d06e687ce486f680f6d71a&#39;</span><span class="p">)</span>
+    <span class="n">files</span><span class="p">[</span><span class="s">&quot;label-info.txt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;label_info.txt&quot;</span><span class="p">,</span>
+                               <span class="s">&#39;39db9f0f5e173d7a2c2e51b07d5d711b&#39;</span><span class="p">)</span>
+    <span class="n">fetch_data</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">files</span><span class="p">,</span> <span class="n">folder</span></div>
+
+
+<div class="viewcode-block" id="read_stanford_labels"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_stanford_labels">[docs]</a><span class="k">def</span> <span class="nf">read_stanford_labels</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Read stanford hardi data and label map&quot;&quot;&quot;</span>
+    <span class="c"># First get the hardi data</span>
+    <span class="n">fetch_stanford_hardi</span><span class="p">()</span>
+    <span class="n">hard_img</span><span class="p">,</span> <span class="n">gtab</span> <span class="o">=</span> <span class="n">read_stanford_hardi</span><span class="p">()</span>
+
+    <span class="c"># Fetch and load</span>
+    <span class="n">files</span><span class="p">,</span> <span class="n">folder</span> <span class="o">=</span> <span class="n">fetch_stanford_labels</span><span class="p">()</span>
+    <span class="n">labels_file</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&quot;aparc-reduced.nii.gz&quot;</span><span class="p">)</span>
+    <span class="n">labels_img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">labels_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hard_img</span><span class="p">,</span> <span class="n">gtab</span><span class="p">,</span> <span class="n">labels_img</span></div>
+
+
+<div class="viewcode-block" id="fetch_stanford_hardi"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_stanford_hardi">[docs]</a><span class="k">def</span> <span class="nf">fetch_stanford_hardi</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Download a HARDI dataset with 160 gradient directions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://stacks.stanford.edu/file/druid:yx282xq2090/&#39;</span>
+    <span class="n">uraw</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;dwi.nii.gz&#39;</span>
+    <span class="n">ubval</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;dwi.bvals&#39;</span>
+    <span class="n">ubvec</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;dwi.bvecs&#39;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;stanford_hardi&#39;</span><span class="p">)</span>
+
+    <span class="n">md5_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;0b18513b46132b4d1051ed3364f2acbc&#39;</span><span class="p">,</span> <span class="c"># data</span>
+                <span class="s">&#39;4e08ee9e2b1d2ec3fddb68c70ae23c36&#39;</span><span class="p">,</span> <span class="c"># bval</span>
+                <span class="s">&#39;4c63a586f29afc6a48a5809524a76cb4&#39;</span><span class="p">]</span> <span class="c"># bvec</span>
+
+    <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">uraw</span><span class="p">,</span> <span class="n">ubval</span><span class="p">,</span> <span class="n">ubvec</span><span class="p">]</span>
+    <span class="n">fname_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;HARDI150.nii.gz&#39;</span><span class="p">,</span> <span class="s">&#39;HARDI150.bval&#39;</span><span class="p">,</span> <span class="s">&#39;HARDI150.bvec&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Creating new directory </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Downloading raw HARDI data (87MB)...&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">md5_list</span><span class="p">)):</span>
+            <span class="n">_get_file_data</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">url_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">check_md5</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">md5_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_stanford_hardi"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_stanford_hardi">[docs]</a><span class="k">def</span> <span class="nf">read_stanford_hardi</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Load Stanford HARDI dataset</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    img : obj,</span>
+<span class="sd">        Nifti1Image</span>
+<span class="sd">    gtab : obj,</span>
+<span class="sd">        GradientTable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;stanford_hardi&#39;</span><span class="p">)</span>
+    <span class="n">fraw</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;HARDI150.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">fbval</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;HARDI150.bval&#39;</span><span class="p">)</span>
+    <span class="n">fbvec</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;HARDI150.bvec&#39;</span><span class="p">)</span>
+    <span class="n">md5_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="s">&#39;0b18513b46132b4d1051ed3364f2acbc&#39;</span><span class="p">,</span>
+                <span class="s">&#39;bval&#39;</span><span class="p">:</span> <span class="s">&#39;4e08ee9e2b1d2ec3fddb68c70ae23c36&#39;</span><span class="p">,</span>
+                <span class="s">&#39;bvec&#39;</span><span class="p">:</span> <span class="s">&#39;4c63a586f29afc6a48a5809524a76cb4&#39;</span><span class="p">}</span>
+
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fbval</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;bval&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fbvec</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;bvec&#39;</span><span class="p">])</span>
+
+    <span class="kn">from</span> <span class="nn">dipy.io.gradients</span> <span class="kn">import</span> <span class="n">read_bvals_bvecs</span>
+    <span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span> <span class="o">=</span> <span class="n">read_bvals_bvecs</span><span class="p">(</span><span class="n">fbval</span><span class="p">,</span> <span class="n">fbvec</span><span class="p">)</span>
+
+    <span class="kn">from</span> <span class="nn">dipy.core.gradients</span> <span class="kn">import</span> <span class="n">gradient_table</span>
+    <span class="n">gtab</span> <span class="o">=</span> <span class="n">gradient_table</span><span class="p">(</span><span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span></div>
+
+
+<div class="viewcode-block" id="fetch_stanford_t1"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_stanford_t1">[docs]</a><span class="k">def</span> <span class="nf">fetch_stanford_t1</span><span class="p">():</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://stacks.stanford.edu/file/druid:yx282xq2090/&#39;</span>
+    <span class="n">url_t1</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;t1.nii.gz&#39;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;stanford_hardi&#39;</span><span class="p">)</span>
+    <span class="n">file_md5</span> <span class="o">=</span> <span class="s">&#39;a6a140da6a947d4131b2368752951b0a&#39;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;t1.nii.gz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">url_t1</span><span class="p">,</span> <span class="n">file_md5</span><span class="p">)}</span>
+    <span class="n">fetch_data</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">files</span><span class="p">,</span> <span class="n">folder</span></div>
+
+
+<div class="viewcode-block" id="read_stanford_t1"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_stanford_t1">[docs]</a><span class="k">def</span> <span class="nf">read_stanford_t1</span><span class="p">():</span>
+    <span class="n">files</span><span class="p">,</span> <span class="n">folder</span> <span class="o">=</span> <span class="n">fetch_stanford_t1</span><span class="p">()</span>
+    <span class="n">f_t1</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;t1.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f_t1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span></div>
+
+
+<div class="viewcode-block" id="fetch_stanford_pve_maps"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_stanford_pve_maps">[docs]</a><span class="k">def</span> <span class="nf">fetch_stanford_pve_maps</span><span class="p">():</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://stacks.stanford.edu/file/druid:yx282xq2090/&#39;</span>
+    <span class="n">url_pve_csf</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;pve_csf.nii.gz&#39;</span>
+    <span class="n">url_pve_gm</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;pve_gm.nii.gz&#39;</span>
+    <span class="n">url_pve_wm</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;pve_wm.nii.gz&#39;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;stanford_hardi&#39;</span><span class="p">)</span>
+    <span class="n">file_csf_md5</span> <span class="o">=</span> <span class="s">&#39;2c498e4fed32bca7f726e28aa86e9c18&#39;</span>
+    <span class="n">file_gm_md5</span> <span class="o">=</span> <span class="s">&#39;1654b20aeb35fc2734a0d7928b713874&#39;</span>
+    <span class="n">file_wm_md5</span> <span class="o">=</span> <span class="s">&#39;2e244983cf92aaf9f9d37bc7716b37d5&#39;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;pve_csf.nii.gz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">url_pve_csf</span><span class="p">,</span> <span class="n">file_csf_md5</span><span class="p">),</span>
+             <span class="s">&quot;pve_gm.nii.gz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">url_pve_gm</span><span class="p">,</span> <span class="n">file_gm_md5</span><span class="p">),</span>
+             <span class="s">&quot;pve_wm.nii.gz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">url_pve_wm</span><span class="p">,</span> <span class="n">file_wm_md5</span><span class="p">)}</span>
+    <span class="n">fetch_data</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">files</span><span class="p">,</span> <span class="n">folder</span></div>
+
+
+<div class="viewcode-block" id="read_stanford_pve_maps"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_stanford_pve_maps">[docs]</a><span class="k">def</span> <span class="nf">read_stanford_pve_maps</span><span class="p">():</span>
+    <span class="n">files</span><span class="p">,</span> <span class="n">folder</span> <span class="o">=</span> <span class="n">fetch_stanford_pve_maps</span><span class="p">()</span>
+    <span class="n">f_pve_csf</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;pve_csf.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">f_pve_gm</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;pve_gm.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">f_pve_wm</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;pve_wm.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">img_pve_csf</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f_pve_csf</span><span class="p">)</span>
+    <span class="n">img_pve_gm</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f_pve_gm</span><span class="p">)</span>
+    <span class="n">img_pve_wm</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f_pve_wm</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">img_pve_csf</span><span class="p">,</span> <span class="n">img_pve_gm</span><span class="p">,</span> <span class="n">img_pve_wm</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fetch_taiwan_ntu_dsi"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_taiwan_ntu_dsi">[docs]</a><span class="k">def</span> <span class="nf">fetch_taiwan_ntu_dsi</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Download a DSI dataset with 203 gradient directions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">uraw</span> <span class="o">=</span> <span class="s">&#39;http://dl.dropbox.com/u/2481924/taiwan_ntu_dsi.nii.gz&#39;</span>
+    <span class="n">ubval</span> <span class="o">=</span> <span class="s">&#39;http://dl.dropbox.com/u/2481924/tawian_ntu_dsi.bval&#39;</span>
+    <span class="n">ubvec</span> <span class="o">=</span> <span class="s">&#39;http://dl.dropbox.com/u/2481924/taiwan_ntu_dsi.bvec&#39;</span>
+    <span class="n">ureadme</span> <span class="o">=</span> <span class="s">&#39;http://dl.dropbox.com/u/2481924/license_taiwan_ntu_dsi.txt&#39;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;taiwan_ntu_dsi&#39;</span><span class="p">)</span>
+
+    <span class="n">md5_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;950408c0980a7154cb188666a885a91f&#39;</span><span class="p">,</span> <span class="c"># data</span>
+                <span class="s">&#39;602e5cb5fad2e7163e8025011d8a6755&#39;</span><span class="p">,</span> <span class="c"># bval</span>
+                <span class="s">&#39;a95eb1be44748c20214dc7aa654f9e6b&#39;</span><span class="p">,</span> <span class="c"># bvec</span>
+                <span class="s">&#39;7fa1d5e272533e832cc7453eeba23f44&#39;</span><span class="p">]</span> <span class="c"># license</span>
+
+    <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">uraw</span><span class="p">,</span> <span class="n">ubval</span><span class="p">,</span> <span class="n">ubvec</span><span class="p">,</span> <span class="n">ureadme</span><span class="p">]</span>
+    <span class="n">fname_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;DSI203.nii.gz&#39;</span><span class="p">,</span> <span class="s">&#39;DSI203.bval&#39;</span><span class="p">,</span> <span class="s">&#39;DSI203.bvec&#39;</span><span class="p">,</span> <span class="s">&#39;DSI203_license.txt&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Creating new directory </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Downloading raw DSI data (91MB)...&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">md5_list</span><span class="p">)):</span>
+            <span class="n">_get_file_data</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">url_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">check_md5</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">md5_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;See DSI203_license.txt for LICENSE.&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;For the complete datasets please visit :&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;http://dsi-studio.labsolver.org&#39;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_taiwan_ntu_dsi"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_taiwan_ntu_dsi">[docs]</a><span class="k">def</span> <span class="nf">read_taiwan_ntu_dsi</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Load Taiwan NTU dataset</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    img : obj,</span>
+<span class="sd">        Nifti1Image</span>
+<span class="sd">    gtab : obj,</span>
+<span class="sd">        GradientTable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;taiwan_ntu_dsi&#39;</span><span class="p">)</span>
+    <span class="n">fraw</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;DSI203.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">fbval</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;DSI203.bval&#39;</span><span class="p">)</span>
+    <span class="n">fbvec</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;DSI203.bvec&#39;</span><span class="p">)</span>
+    <span class="n">md5_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="s">&#39;950408c0980a7154cb188666a885a91f&#39;</span><span class="p">,</span>
+                <span class="s">&#39;bval&#39;</span><span class="p">:</span> <span class="s">&#39;602e5cb5fad2e7163e8025011d8a6755&#39;</span><span class="p">,</span>
+                <span class="s">&#39;bvec&#39;</span><span class="p">:</span> <span class="s">&#39;a95eb1be44748c20214dc7aa654f9e6b&#39;</span><span class="p">,</span>
+                <span class="s">&#39;license&#39;</span><span class="p">:</span> <span class="s">&#39;7fa1d5e272533e832cc7453eeba23f44&#39;</span><span class="p">}</span>
+
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fbval</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;bval&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">fbvec</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;bvec&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;DSI203_license.txt&#39;</span><span class="p">),</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;license&#39;</span><span class="p">])</span>
+
+    <span class="kn">from</span> <span class="nn">dipy.io.gradients</span> <span class="kn">import</span> <span class="n">read_bvals_bvecs</span>
+    <span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span> <span class="o">=</span> <span class="n">read_bvals_bvecs</span><span class="p">(</span><span class="n">fbval</span><span class="p">,</span> <span class="n">fbvec</span><span class="p">)</span>
+    <span class="n">bvecs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">bvecs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bvecs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">*</span> <span class="n">bvecs</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))[:,</span> <span class="bp">None</span><span class="p">]</span>
+
+    <span class="kn">from</span> <span class="nn">dipy.core.gradients</span> <span class="kn">import</span> <span class="n">gradient_table</span>
+    <span class="n">gtab</span> <span class="o">=</span> <span class="n">gradient_table</span><span class="p">(</span><span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span></div>
+
+
+<div class="viewcode-block" id="fetch_syn_data"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_syn_data">[docs]</a><span class="k">def</span> <span class="nf">fetch_syn_data</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Download t1 and b0 volumes from the same session</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://dl.dropboxusercontent.com/u/5918983/&#39;</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;t1.nii.gz&#39;</span>
+    <span class="n">b0</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;b0.nii.gz&#39;</span>
+
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;syn_test&#39;</span><span class="p">)</span>
+
+    <span class="n">md5_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;701bda02bb769655c7d4a9b1df2b73a6&#39;</span><span class="p">,</span> <span class="c"># t1</span>
+                <span class="s">&#39;e4b741f0c77b6039e67abb2885c97a78&#39;</span><span class="p">]</span> <span class="c"># b0</span>
+
+    <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t1</span><span class="p">,</span> <span class="n">b0</span><span class="p">]</span>
+    <span class="n">fname_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;t1.nii.gz&#39;</span><span class="p">,</span> <span class="s">&#39;b0.nii.gz&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Creating new directory </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Downloading t1 and b0 volumes from the same session (12MB)...&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">md5_list</span><span class="p">)):</span>
+            <span class="n">_get_file_data</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">url_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">check_md5</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">md5_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_syn_data"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_syn_data">[docs]</a><span class="k">def</span> <span class="nf">read_syn_data</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Load t1 and b0 volumes from the same session</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    t1 : obj,</span>
+<span class="sd">        Nifti1Image</span>
+<span class="sd">    b0 : obj,</span>
+<span class="sd">        Nifti1Image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;syn_test&#39;</span><span class="p">)</span>
+    <span class="n">t1_name</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;t1.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">b0_name</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;b0.nii.gz&#39;</span><span class="p">)</span>
+
+    <span class="n">md5_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;t1&#39;</span><span class="p">:</span> <span class="s">&#39;701bda02bb769655c7d4a9b1df2b73a6&#39;</span><span class="p">,</span>
+                <span class="s">&#39;b0&#39;</span><span class="p">:</span> <span class="s">&#39;e4b741f0c77b6039e67abb2885c97a78&#39;</span><span class="p">}</span>
+
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">t1_name</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;t1&#39;</span><span class="p">])</span>
+    <span class="n">check_md5</span><span class="p">(</span><span class="n">b0_name</span><span class="p">,</span> <span class="n">md5_dict</span><span class="p">[</span><span class="s">&#39;b0&#39;</span><span class="p">])</span>
+
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">t1_name</span><span class="p">)</span>
+    <span class="n">b0</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b0_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">t1</span><span class="p">,</span> <span class="n">b0</span></div>
+</pre></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="col-md-3 hidden-xs" id="sidebar-wrapper">
+  <div class="sidebar hidden-xs" role="navigation" aria-label="main navigation">
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-inline" action="../../search.html" method="get">
+      <div class="input-append input-group">
+        <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+        <span class="input-group-btn">
+        <input type="submit" class="btn" value="Go" />
+        </span>
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row footer-relbar">
+<div id="navbar-related" class=" related navbar navbar-inverse" role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav navbar-nav ">
+        <li><a href="../../index.html">nidata  documentation</a></li>
+    </ul>
+<ul class="nav navbar-nav pull-right hidden-xs hidden-sm">
+      
+        <li><a href="../../py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="../../genindex.html" title="General Index" >index</a></li>
+        <li><a href="../index.html" >Module code</a></li>
+        <li><a href="#">top</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2016, Frank Liao.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

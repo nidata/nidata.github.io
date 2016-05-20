@@ -1,0 +1,10 @@
+nidata.atlas.smith_2009 package
+===============================
+
+Module contents
+---------------
+
+.. automodule:: nidata.atlas.smith_2009
+    :members:
+    :undoc-members:
+    :show-inheritance:

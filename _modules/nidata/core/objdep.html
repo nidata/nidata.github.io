@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>nidata.core.objdep &mdash; nidata  documentation</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" id="current-theme" href="../../../_static/css/bootstrap3/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" id="current-adjust-theme" type="text/css" />
+
+<link rel="stylesheet" href="../../../_static/css/font-awesome.min.css">
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+</style>
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    '../../../',
+            VERSION:     '',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+    <script type="text/javascript" src="../../../_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/bootstrap3.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/basicstrap.js"></script>
+<script type="text/javascript">
+</script>
+    <link rel="top" title="nidata  documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div id="navbar-top" class="navbar navbar-fixed-top navbar-inverse" role="navigation" aria-label="top navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../../index.html">nidata  documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+            
+              <li><a href="../../../py-modindex.html" title="Python Module Index" >modules </a></li>
+              <li><a href="../../../genindex.html" title="General Index" accesskey="I">index </a></li>
+              <li><a href="../../index.html" accesskey="U">Module code</a></li>
+            
+
+            <li class="visible-xs">
+                <form class="search form-search form-inline navbar-form navbar-right sp-searchbox" action="../../../search.html" method="get">
+                  <div class="input-append input-group">
+                    <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+                    <span class="input-group-btn">
+                    <input type="submit" class="btn" value="Go" />
+                    </span>
+                  </div>
+                  <input type="hidden" name="check_keywords" value="yes" />
+                  <input type="hidden" name="area" value="default" />
+                </form>
+            </li>
+
+            
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+      <!-- row -->
+      <div class="row">
+        
+        
+
+        <div class="col-md-9" id="content-wrapper">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <h1>Source code for nidata.core.objdep</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions for dynamically managing dependencies.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">pip</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">with_metaclass</span>
+
+
+<div class="viewcode-block" id="install_dependency"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.install_dependency">[docs]</a><span class="k">def</span> <span class="nf">install_dependency</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">install_info</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TODO: install_dependency docstring.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">install_info</span> <span class="o">=</span> <span class="n">install_info</span> <span class="ow">or</span> <span class="n">module_name</span>
+
+    <span class="c"># Install it.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Installing </span><span class="si">%s</span><span class="s"> from </span><span class="si">%s</span><span class="s">...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">install_info</span><span class="p">))</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s">&#39;install&#39;</span><span class="p">,</span> <span class="n">install_info</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">rv</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Pip returned </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">rv</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Exception while installing </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">ex</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="c"># Verify it</span>
+    <span class="k">if</span> <span class="n">verify</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">ie</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;Failed to import </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">ie</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">return</span> <span class="bp">True</span></div>
+
+
+<div class="viewcode-block" id="get_missing_dependencies"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.get_missing_dependencies">[docs]</a><span class="k">def</span> <span class="nf">get_missing_dependencies</span><span class="p">(</span><span class="n">dependencies</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TODO: get_missing_dependencies docstring</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">missing_dependencies</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">dep</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c"># as ie:</span>
+            <span class="c"># print(&#39;Import error: %s&#39; % str(ie))</span>
+            <span class="n">missing_dependencies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dep</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">missing_dependencies</span></div>
+
+
+<div class="viewcode-block" id="DependenciesMeta"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.DependenciesMeta">[docs]</a><span class="k">class</span> <span class="nc">DependenciesMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TODO: DependenciesMeta docstring.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_init__wrapper</span><span class="p">(</span><span class="n">init_fn</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            TODO: _init__wrapper docstring</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">def</span> <span class="nf">wrapper_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">install_missing_dependencies</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">init_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wrapper_fn</span>
+
+        <span class="n">new_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DependenciesMeta</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span> \
+            <span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        <span class="n">new_cls</span><span class="o">.</span><span class="n">__init__</span> <span class="o">=</span> <span class="n">_init__wrapper</span><span class="p">(</span><span class="n">new_cls</span><span class="o">.</span><span class="n">__init__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_cls</span></div>
+
+
+<div class="viewcode-block" id="ClassWithDependencies"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.ClassWithDependencies">[docs]</a><span class="k">class</span> <span class="nc">ClassWithDependencies</span><span class="p">(</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">DependenciesMeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ClassWithDependencies.get_missing_dependencies"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.ClassWithDependencies.get_missing_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">get_missing_dependencies</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TODO: get_missing_dependencies docstring</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">get_missing_dependencies</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;dependencies&#39;</span><span class="p">,</span> <span class="p">()))</span></div>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ClassWithDependencies.install_missing_dependencies"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.ClassWithDependencies.install_missing_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">install_missing_dependencies</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TODO: install_missing_dependencies docstring</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dependencies</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">dependencies</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">get_missing_dependencies</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Installing missing dependencies &#39;</span><span class="si">%s</span><span class="s">&#39;, for </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">dep</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cls</span><span class="p">)))</span>
+
+            <span class="c"># Allow install info to be a dict; value is some</span>
+            <span class="c"># alternate pip string for installing the module name.</span>
+            <span class="c"># (e.g. git+git://github.com/gldnspud/virtualenv-pythonw-osx)</span>
+            <span class="n">install_info</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">dependencies</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">install_info</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="n">dep</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">install_dependency</span><span class="p">(</span><span class="n">dep</span><span class="p">,</span> <span class="n">install_info</span><span class="o">=</span><span class="n">install_info</span><span class="p">):</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+                    <span class="p">[</span><span class="s">&#39;pip&#39;</span><span class="p">,</span> <span class="s">&#39;list&#39;</span><span class="p">],</span>
+                    <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Failed to install dependency &#39;</span><span class="si">%s</span><span class="s">&#39;; &quot;</span>
+                                <span class="s">&quot;you will need to install it manually &quot;</span>
+                                <span class="s">&quot;and re-run your code.</span><span class="se">\n</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dep</span><span class="p">,</span> <span class="n">out</span><span class="p">))</span></div></div>
+</pre></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="col-md-3 hidden-xs" id="sidebar-wrapper">
+  <div class="sidebar hidden-xs" role="navigation" aria-label="main navigation">
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-inline" action="../../../search.html" method="get">
+      <div class="input-append input-group">
+        <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+        <span class="input-group-btn">
+        <input type="submit" class="btn" value="Go" />
+        </span>
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row footer-relbar">
+<div id="navbar-related" class=" related navbar navbar-inverse" role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav navbar-nav ">
+        <li><a href="../../../index.html">nidata  documentation</a></li>
+    </ul>
+<ul class="nav navbar-nav pull-right hidden-xs hidden-sm">
+      
+        <li><a href="../../../py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="../../../genindex.html" title="General Index" >index</a></li>
+        <li><a href="../../index.html" >Module code</a></li>
+        <li><a href="#">top</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2016, Frank Liao.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

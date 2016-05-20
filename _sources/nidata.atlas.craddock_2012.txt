@@ -1,0 +1,10 @@
+nidata.atlas.craddock_2012 package
+==================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.atlas.craddock_2012
+    :members:
+    :undoc-members:
+    :show-inheritance:

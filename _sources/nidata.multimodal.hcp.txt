@@ -1,0 +1,10 @@
+nidata.multimodal.hcp package
+=============================
+
+Module contents
+---------------
+
+.. automodule:: nidata.multimodal.hcp
+    :members:
+    :undoc-members:
+    :show-inheritance:

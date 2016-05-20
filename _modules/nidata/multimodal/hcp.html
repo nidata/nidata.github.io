@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>nidata.multimodal.hcp &mdash; nidata  documentation</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" id="current-theme" href="../../../_static/css/bootstrap3/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" id="current-adjust-theme" type="text/css" />
+
+<link rel="stylesheet" href="../../../_static/css/font-awesome.min.css">
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+</style>
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    '../../../',
+            VERSION:     '',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+    <script type="text/javascript" src="../../../_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/bootstrap3.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/basicstrap.js"></script>
+<script type="text/javascript">
+</script>
+    <link rel="top" title="nidata  documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div id="navbar-top" class="navbar navbar-fixed-top navbar-inverse" role="navigation" aria-label="top navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../../index.html">nidata  documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+            
+              <li><a href="../../../py-modindex.html" title="Python Module Index" >modules </a></li>
+              <li><a href="../../../genindex.html" title="General Index" accesskey="I">index </a></li>
+              <li><a href="../../index.html" accesskey="U">Module code</a></li>
+            
+
+            <li class="visible-xs">
+                <form class="search form-search form-inline navbar-form navbar-right sp-searchbox" action="../../../search.html" method="get">
+                  <div class="input-append input-group">
+                    <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+                    <span class="input-group-btn">
+                    <input type="submit" class="btn" value="Go" />
+                    </span>
+                  </div>
+                  <input type="hidden" name="check_keywords" value="yes" />
+                  <input type="hidden" name="area" value="default" />
+                </form>
+            </li>
+
+            
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+      <!-- row -->
+      <div class="row">
+        
+        
+
+        <div class="col-md-9" id="content-wrapper">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <h1>Source code for nidata.multimodal.hcp</h1><div class="highlight"><pre>
+<span class="c"># *- encoding: utf-8 -*-</span>
+<span class="c"># Author: Ben Cipollini, Howard Zhang</span>
+<span class="c"># License: simplified BSD</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
+
+<span class="kn">from</span> <span class="nn">...core.datasets</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">...core.fetchers</span> <span class="kn">import</span> <span class="n">AmazonS3Fetcher</span><span class="p">,</span> <span class="n">HttpFetcher</span>
+
+
+<div class="viewcode-block" id="HcpHttpFetcher"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpHttpFetcher">[docs]</a><span class="k">class</span> <span class="nc">HcpHttpFetcher</span><span class="p">(</span><span class="n">HttpFetcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;TODO: HcpHttpFetcher docstring&quot;&quot;&quot;</span>
+
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;requests&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">HttpFetcher</span><span class="o">.</span><span class="n">dependencies</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">username</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;NIDATA_HCP_USERNAME&quot;</span><span class="p">)</span>
+        <span class="n">passwd</span> <span class="o">=</span> <span class="n">passwd</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;NIDATA_HCP_PASSWD&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">passwd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Must define NIDATA_HCP_USERNAME and &quot;</span>
+                             <span class="s">&quot;NIDATA_HCP_PASSWD environment variables, or &quot;</span>
+                             <span class="s">&quot;pass username and passwd arguments.&quot;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">HcpHttpFetcher</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">data_dir</span><span class="p">,</span>
+                                             <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span>
+                                             <span class="n">passwd</span><span class="o">=</span><span class="n">passwd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jsession_id</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="HcpHttpFetcher.fetch"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpHttpFetcher.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jsession_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Log in to the website.</span>
+            <span class="kn">import</span> <span class="nn">requests</span>
+
+            <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s">&#39;https://db.humanconnectome.org/data/JSESSION&#39;</span><span class="p">,</span>
+                                <span class="n">data</span><span class="o">=</span><span class="p">{},</span>
+                                <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">passwd</span><span class="p">))</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+            <span class="c"># Get the login information.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jsession_id</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;JSESSIONID&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jsession_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Failed to create HCP session.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">passwd</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># use session</span>
+
+        <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reformat_files</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>  <span class="c"># allows flexibility</span>
+
+        <span class="c"># Add the session header</span>
+        <span class="k">for</span> <span class="n">tgt</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">opts</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s">&#39;cookies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;cookies&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s">&#39;cookies&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;JSESSIONID&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jsession_id</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">HcpHttpFetcher</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+                                                 <span class="n">resume</span><span class="o">=</span><span class="n">resume</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span>
+                                                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="HcpDataset"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpDataset">[docs]</a><span class="k">class</span> <span class="nc">HcpDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;TODO: HcpDataset docstring&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fetcher_type</span><span class="o">=</span><span class="s">&#39;http&#39;</span><span class="p">,</span> <span class="n">profile_name</span><span class="o">=</span><span class="s">&#39;hcp&#39;</span><span class="p">,</span>
+                 <span class="n">access_key</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">secret_access_key</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;fetcher_type: aws or XNAT&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HcpDataset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">data_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetcher_type</span> <span class="o">=</span> <span class="n">fetcher_type</span>
+        <span class="k">if</span> <span class="n">fetcher_type</span> <span class="o">==</span> <span class="s">&#39;aws&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span> <span class="o">=</span> <span class="n">AmazonS3Fetcher</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span>
+                                           <span class="n">profile_name</span><span class="o">=</span><span class="n">profile_name</span><span class="p">,</span>
+                                           <span class="n">access_key</span><span class="o">=</span><span class="n">access_key</span><span class="p">,</span>
+                                           <span class="n">secret_access_key</span><span class="o">=</span><span class="n">secret_access_key</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fetcher_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;http&#39;</span><span class="p">,</span> <span class="s">&#39;xnat&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span> <span class="o">=</span> <span class="n">HcpHttpFetcher</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span>
+                                          <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span>
+                                          <span class="n">passwd</span><span class="o">=</span><span class="n">passwd</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">fetcher_type</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HcpDataset.prepend"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpDataset.prepend">[docs]</a>    <span class="k">def</span> <span class="nf">prepend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_files</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepends the proper absolute url to a list of files, based on fetcher type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        src_files: list of str</span>
+<span class="sd">            uncompleted urls without the prepended fetcher type</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        list of fully qualified urls</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">src_file</span> <span class="ow">in</span> <span class="n">src_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span><span class="p">,</span> <span class="n">HttpFetcher</span><span class="p">):</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">src_file</span><span class="p">,</span> <span class="s">&#39;https://db.humanconnectome.org/data/&#39;</span>
+                                        <span class="s">&#39;archive/projects/HCP_900/subjects/&#39;</span> <span class="o">+</span>
+                                        <span class="n">src_file</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span><span class="p">,</span> <span class="n">AmazonS3Fetcher</span><span class="p">):</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">src_file</span><span class="p">,</span> <span class="s">&#39;HCP/&#39;</span> <span class="o">+</span> <span class="n">src_file</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">files</span>
+</div>
+<div class="viewcode-block" id="HcpDataset.get_subject_list"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpDataset.get_subject_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_subject_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_subjects</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of subject IDs. Depends on the # of subjects,</span>
+<span class="sd">        which also corresponds to other things (license agreement,</span>
+<span class="sd">        type of data available, etc)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">subj_file_info</span> <span class="o">=</span> <span class="p">((</span><span class="s">&#39;S900.txt&#39;</span><span class="p">,</span> <span class="mi">900</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;S500.txt&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;U100.txt&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+        <span class="n">fil</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">errs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="c"># Loop until we retreive a file that&#39;s good.</span>
+        <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="n">nsubj</span> <span class="ow">in</span> <span class="n">subj_file_info</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fil</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span>
+                    <span class="n">files</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prepend</span><span class="p">([</span><span class="n">fname</span><span class="p">]),</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fil</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+                <span class="c"># Make sure it&#39;s a good file.</span>
+                <span class="n">subject_ids</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                <span class="n">subject_ids</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">sid</span><span class="p">:</span> <span class="n">sid</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+                                     <span class="p">[</span><span class="n">sid</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">sid</span> <span class="ow">in</span> <span class="n">subject_ids</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">subject_ids</span> <span class="o">&lt;</span> <span class="n">nsubj</span><span class="p">:</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span>  <span class="c"># corrupt</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Removed corrupt file </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">fil</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">errs</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
+                <span class="k">continue</span>
+
+        <span class="c"># Completed the loop. Make sure we succeeded,</span>
+        <span class="c"># and that what&#39;s requested is possible.</span>
+        <span class="k">if</span> <span class="n">fil</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Failed to fetch subject list from any file. &quot;</span>
+                            <span class="s">&quot;Error details: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">errs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_subjects</span> <span class="o">&gt;</span> <span class="n">nsubj</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;Subjects number requested is too high. Please &quot;</span>
+                             <span class="s">&quot;enter a number &lt;= </span><span class="si">%d</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="n">nsubj</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">subject_ids</span><span class="p">[:</span><span class="n">n_subjects</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="HcpDataset.get_diff_files"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpDataset.get_diff_files">[docs]</a>    <span class="k">def</span> <span class="nf">get_diff_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        process : boolean</span>
+<span class="sd">            whether or not the data is processed or not</span>
+<span class="sd">            can choose from True or False</span>
+<span class="sd">        subj_id : String</span>
+<span class="sd">            the id of the subject the files are on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">process</span><span class="p">:</span>
+            <span class="n">diff_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/unprocessed/3T/Diffusion&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_BIAS_32CH.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_BIAS_BC.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_DWI_dir95_LR_SBRef.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_DWI_dir95_LR.bval&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_DWI_dir95_LR.bvec&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_DWI_dir95_LR.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_DWI_dir95_RL_SBRef.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_DWI_dir95_RL.bval&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_DWI_dir95_RL.bvec&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">_3T_DWI_dir95_RL.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/release-notes/Diffusion_unproc.txt&#39;</span> <span class="o">%</span> <span class="n">subj_id</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">diff_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/T1w/Diffusion&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/bvals&#39;</span> <span class="o">%</span> <span class="n">diff_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/bvecs&#39;</span> <span class="o">%</span> <span class="n">diff_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/data.nii.gz&#39;</span> <span class="o">%</span> <span class="n">diff_path</span><span class="p">]</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/release-notes/Diffusion_preproc.txt&#39;</span> <span class="o">%</span> <span class="n">subj_id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">files</span>
+</div>
+<div class="viewcode-block" id="HcpDataset.get_anat_files"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpDataset.get_anat_files">[docs]</a>    <span class="k">def</span> <span class="nf">get_anat_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">,</span> <span class="n">atlas</span><span class="p">,</span> <span class="n">mni</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atlas : String</span>
+<span class="sd">            scope of surface data,</span>
+<span class="sd">            can choose from native or fsaverage</span>
+<span class="sd">        mni : boolean</span>
+<span class="sd">            determines whether to use mninonlinear data or not,</span>
+<span class="sd">            can choose from true or false</span>
+<span class="sd">        property : String</span>
+<span class="sd">            the chosen properties displayed in structural data files</span>
+<span class="sd">            can choose from myelinmap, curvature, thickness</span>
+<span class="sd">        process : boolean</span>
+<span class="sd">            whether or not the data is processed or not</span>
+<span class="sd">            can choose from True or False</span>
+<span class="sd">        subj_id : String</span>
+<span class="sd">            the id of the subject the files are on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">process</span><span class="p">:</span>
+            <span class="n">anat_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/unprocessed/3T&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/T1w_MPR1/</span><span class="si">%s</span><span class="s">_3T_AFI.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/T1w_MPR1/</span><span class="si">%s</span><span class="s">_3T_BIAS_32CH.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/T1w_MPR1/</span><span class="si">%s</span><span class="s">_3T_BIAS_BC.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/T1w_MPR1/</span><span class="si">%s</span><span class="s">_3T_FieldMap_Magnitude.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/T1w_MPR1/</span><span class="si">%s</span><span class="s">_3T_FieldMap_Phase.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/T1w_MPR1/</span><span class="si">%s</span><span class="s">_3T_T1w_MPR1.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/release-notes/Structural_unproc.txt&#39;</span> <span class="o">%</span> <span class="n">subj_id</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">mni</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">atlas</span> <span class="o">==</span> <span class="s">&#39;native&#39;</span><span class="p">:</span>
+                    <span class="n">anat_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/T1w/Native&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+                    <span class="k">if</span> <span class="nb">property</span> <span class="o">==</span> <span class="s">&#39;thickness&#39;</span><span class="p">:</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.midthickness.native.surf.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.midthickness.native.surf.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                <span class="k">elif</span> <span class="n">atlas</span> <span class="o">==</span> <span class="s">&#39;fsaverage&#39;</span><span class="p">:</span>
+                    <span class="n">anat_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/T1w/fsaverage_LR32k&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+                    <span class="k">if</span> <span class="nb">property</span> <span class="o">==</span> <span class="s">&#39;thickness&#39;</span><span class="p">:</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.midthickness.32k_fs_LR.surf.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.midthickness.32k_fs_LR.surf.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">atlas</span> <span class="o">==</span> <span class="s">&#39;native&#39;</span><span class="p">:</span>
+                    <span class="n">anat_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/MNINonLinear/Native&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+                    <span class="k">if</span> <span class="nb">property</span> <span class="o">==</span> <span class="s">&#39;thickness&#39;</span><span class="p">:</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.corrThickness.native.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.corrThickness.native.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.midthickness.native.surf.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.thickness.native.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.corrThickness.native.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.midthickness.native.surf.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.thickness.native.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.thickness.native.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                    <span class="k">elif</span> <span class="nb">property</span> <span class="o">==</span> <span class="s">&#39;curvature&#39;</span><span class="p">:</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.curvature.native.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.curvature.native.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.curvature.native.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                    <span class="k">elif</span> <span class="nb">property</span> <span class="o">==</span> <span class="s">&#39;myelinmap&#39;</span><span class="p">:</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.MyelinMap.native.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.MyelinMap_BC.native.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.SmoothedMyelinMap.native.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.SmoothedMyelinMap_BC.native.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.MyelinMap.native.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.MyelinMap_BC.native.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.MyelinMap.native.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.MyelinMap_BC.native.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.SmoothedMyelinMap.native.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.SmoothedMyelinMap_BC.native.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.SmoothedMyelinMap.native.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.SmoothedMyelinMap_BC.native.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                <span class="k">elif</span> <span class="n">atlas</span> <span class="o">==</span> <span class="s">&#39;fsaverage&#39;</span><span class="p">:</span>
+                    <span class="n">anat_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/MNINonLinear/fsaverage_LR32k&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+                    <span class="k">if</span> <span class="nb">property</span> <span class="o">==</span> <span class="s">&#39;thickness&#39;</span><span class="p">:</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.corrThickness.32k_fs_LR.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.corrThickness.32k_fs_LR.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.midthickness.32k_fs_LR.surf.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.thickness.32k_fs_LR.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.corrThickness.32k_fs_LR.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.midthickness.32k_fs_LR.surf.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.thickness.32k_fs_LR.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.thickness.32k_fs_LR.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                    <span class="k">elif</span> <span class="nb">property</span> <span class="o">==</span> <span class="s">&#39;curvature&#39;</span><span class="p">:</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.curvature.32k_fs_LR.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.curvature.32k_fs_LR.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.curvature.32k_fs_LR.shape.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                    <span class="k">elif</span> <span class="nb">property</span> <span class="o">==</span> <span class="s">&#39;myelinmap&#39;</span><span class="p">:</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.MyelinMap.32k_fs_LR.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.MyelinMap_BC.32k_fs_LR.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.SmoothedMyelinMap.32k_fs_LR.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.L.SmoothedMyelinMap_BC.32k_fs_LR.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.MyelinMap.32k_fs_LR.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.MyelinMap_BC.32k_fs_LR.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.MyelinMap.32k_fs_LR.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.MyelinMap_BC.32k_fs_LR.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.SmoothedMyelinMap.32k_fs_LR.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.R.SmoothedMyelinMap_BC.32k_fs_LR.func.gii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.SmoothedMyelinMap.32k_fs_LR.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+                        <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">.SmoothedMyelinMap_BC.32k_fs_LR.dscalar.nii&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">anat_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/release-notes/Structural_preproc.txt&#39;</span> <span class="o">%</span> <span class="n">subj_id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">files</span>
+</div>
+<div class="viewcode-block" id="HcpDataset.get_rest_files"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpDataset.get_rest_files">[docs]</a>    <span class="k">def</span> <span class="nf">get_rest_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        process : boolean</span>
+<span class="sd">            whether or not the data is processed or not</span>
+<span class="sd">            can choose from True or False</span>
+<span class="sd">        subj_id : String</span>
+<span class="sd">            the id of the subject the files are on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">process</span><span class="p">:</span>
+            <span class="n">rest_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/unprocessed/3T&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/</span><span class="si">%s</span><span class="s">_3T_BIAS_32CH.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rest_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/</span><span class="si">%s</span><span class="s">_3T_BIAS_BC.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rest_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/</span><span class="si">%s</span><span class="s">_3T_rfMRI_REST1_LR_SBRef.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rest_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/</span><span class="si">%s</span><span class="s">_3T_rfMRI_REST1_LR.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rest_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/</span><span class="si">%s</span><span class="s">_3T_SpinEchoFieldMap_LR.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rest_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/</span><span class="si">%s</span><span class="s">_3T_SpinEchoFieldMap_RL.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rest_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/LINKED_DATA/PHYSIO/</span><span class="si">%s</span><span class="s">_3T_rfMRI_REST1_LR_Physio_log.txt&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rest_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/release-notes/rfMRI_REST1_unproc.txt&#39;</span> <span class="o">%</span> <span class="n">subj_id</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rest_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/MNINonLinear/Results&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/brainmask_fs.2.nii.gz&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/Movement_Regressors_dt.txt&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/Movement_Regressors.txt&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/Movement_AbsoluteRMS.txt&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/Movement_AbsoluteRMS_mean.txt&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/Movement_RelativeRMS.txt&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/Movement_RelativeRMS_mean.txt&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/rfMRI_REST1_LR_Atlas.dtseries.nii&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/rfMRI_REST1_LR_Jacobian.nii.gz&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/rfMRI_REST1_LR_SBRef.nii.gz&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/rfMRI_REST1_LR.nii.gz&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/rfMRI_REST1_LR_Physio_log.txt&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/rfMRI_REST1_LR/RibbonVolumeToSurfaceMapping/goodvoxels.nii.gz&#39;</span> <span class="o">%</span> <span class="n">rest_path</span><span class="p">]</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/release-notes/rfMRI_REST1_preproc.txt&#39;</span> <span class="o">%</span> <span class="n">subj_id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">files</span>
+</div>
+<div class="viewcode-block" id="HcpDataset.get_task_files"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpDataset.get_task_files">[docs]</a>    <span class="k">def</span> <span class="nf">get_task_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        task : String</span>
+<span class="sd">            the type of activity for functional data,</span>
+<span class="sd">            can choose from emotional, gambling, language, motor,</span>
+<span class="sd">            relational, social, and workingmemory</span>
+<span class="sd">        process : boolean</span>
+<span class="sd">            whether or not the data is processed or not</span>
+<span class="sd">            can choose from True or False</span>
+<span class="sd">        subj_id : String</span>
+<span class="sd">            the id of the subject the files are on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">process</span><span class="p">:</span>
+            <span class="n">func_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/unprocessed/3T&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/</span><span class="si">%s</span><span class="s">_3T_BIAS_32CH.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/</span><span class="si">%s</span><span class="s">_3T_BIAS_BC.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/</span><span class="si">%s</span><span class="s">_3T_SpinEchoFieldMap_LR.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/</span><span class="si">%s</span><span class="s">_3T_SpinEchoFieldMap_RL.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/</span><span class="si">%s</span><span class="s">_3T_tfMRI_EMOTION_LR.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/</span><span class="si">%s</span><span class="s">_3T_tfMRI_EMOTION_LR_SBRef.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/LINKED_DATA/EPRIME/</span><span class="si">%s</span><span class="s">_3T_EMOTION_run2_TAB.txt&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">,</span> <span class="n">subj_id</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/LINKED_DATA/EPRIME/EVs/EMOTION_Stats.csv&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/LINKED_DATA/EPRIME/EVs/fear.txt&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/LINKED_DATA/EPRIME/EVs/neut.txt&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI/EMOTION_LR/LINKED_DATA/EPRIME/EVs/Sync.txt&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_path</span><span class="p">)]</span>
+
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/release-notes/tfMRI_EMOTION_unproc.txt&#39;</span> <span class="o">%</span> <span class="n">subj_id</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">task</span> <span class="o">==</span> <span class="s">&#39;emotional&#39;</span><span class="p">:</span>
+                <span class="n">func_path</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/MNINonLinear/Results&#39;</span> <span class="o">%</span> <span class="n">subj_id</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/brainmask_fs.2.nii.gz&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/EMOTION_run2_TAB.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/Movement_Regressors_dt.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/Movement_Regressors.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/Movement_AbsoluteRMS.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/Movement_AbsoluteRMS_mean.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/Movement_RelativeRMS.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/Movement_RelativeRMS_mean.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/tfMRI_EMOTION_LR_Atlas.dtseries.nii&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/tfMRI_EMOTION_LR_Jacobian.nii.gz&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/tfMRI_EMOTION_LR_SBRef.nii.gz&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/tfMRI_EMOTION_LR.nii.gz&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/tfMRI_EMOTION_LR_Physio_log.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/tfMRI_EMOTION_LR_hp200_s4_level1.fsf&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/RibbonVolumeToSurfaceMapping/goodvoxels.nii.gz&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/EVs/EMOTION_Stats.csv&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/EVs/fear.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/EVs/neut.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION_LR/EVs/Sync.txt&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/tfMRI_EMOTION/tfMRI_EMOTION_hp200_s4_level2.fsf&#39;</span> <span class="o">%</span> <span class="n">func_path</span><span class="p">]</span>
+                <span class="n">files</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/release-notes/tfMRI_EMOTION_preproc.txt&#39;</span> <span class="o">%</span> <span class="n">subj_id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">files</span>
+</div>
+<div class="viewcode-block" id="HcpDataset.fetch"><a class="viewcode-back" href="../../../nidata.multimodal.hcp.html#nidata.multimodal.hcp.HcpDataset.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_subjects</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">data_types</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+              <span class="n">tasks</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">atlases</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mnis</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">properties</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">process</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_subjects : int</span>
+<span class="sd">            the number of subjects to fetch files from</span>
+<span class="sd">        data_types : list</span>
+<span class="sd">            the type of data to fetch,</span>
+<span class="sd">            can choose from anat, diff, func, or rest</span>
+<span class="sd">        tasks : list</span>
+<span class="sd">            the type of activity for functional data,</span>
+<span class="sd">            can choose from emotional, gambling, language, motor,</span>
+<span class="sd">            relational, social, and workingmemory</span>
+<span class="sd">        atlases : list</span>
+<span class="sd">            scope of surface data,</span>
+<span class="sd">            can choose from native or fsaverage</span>
+<span class="sd">        mnis : list</span>
+<span class="sd">            determines whether to use mninonlinear data or not,</span>
+<span class="sd">            can choose from true or false</span>
+<span class="sd">        properties : list</span>
+<span class="sd">            the chosen properties displayed in structural data files</span>
+<span class="sd">            can choose from myelinmap, curvature, thickness</span>
+<span class="sd">        process : list</span>
+<span class="sd">            whether or not the data is processed or not</span>
+<span class="sd">            can choose from True or False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data_types</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">data_types</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;anat&#39;</span><span class="p">,</span> <span class="s">&#39;diff&#39;</span><span class="p">,</span> <span class="s">&#39;task&#39;</span><span class="p">,</span> <span class="s">&#39;rest&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">tasks</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;emotional&#39;</span><span class="p">,</span> <span class="s">&#39;gambling&#39;</span><span class="p">,</span> <span class="s">&#39;language&#39;</span><span class="p">,</span> <span class="s">&#39;motor&#39;</span><span class="p">,</span>
+                     <span class="s">&#39;relational&#39;</span><span class="p">,</span> <span class="s">&#39;social&#39;</span><span class="p">,</span> <span class="s">&#39;workingmemory&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">atlases</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">atlases</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;native&#39;</span><span class="p">,</span> <span class="s">&#39;fsaverage&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mnis</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">mnis</span> <span class="o">=</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">properties</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">properties</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;myelinmap&#39;</span><span class="p">,</span> <span class="s">&#39;curvature&#39;</span><span class="p">,</span> <span class="s">&#39;thickness&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">process</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">process</span> <span class="o">=</span> <span class="p">[</span><span class="bp">True</span><span class="p">]</span>
+
+        <span class="n">subj_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_subject_list</span><span class="p">(</span><span class="n">n_subjects</span><span class="o">=</span><span class="n">n_subjects</span><span class="p">)</span>
+
+        <span class="c"># Build a list of files to fetch</span>
+        <span class="n">src_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">subj_id</span> <span class="ow">in</span> <span class="n">subj_ids</span><span class="p">[:</span><span class="n">n_subjects</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;diff&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">pro</span> <span class="ow">in</span> <span class="n">process</span><span class="p">:</span>
+                        <span class="n">src_files</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_diff_files</span><span class="p">(</span><span class="n">process</span><span class="o">=</span><span class="n">pro</span><span class="p">,</span>
+                                                         <span class="n">subj_id</span><span class="o">=</span><span class="n">subj_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;anat&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">pro</span> <span class="ow">in</span> <span class="n">process</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">atlas</span> <span class="ow">in</span> <span class="n">atlases</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">mni</span> <span class="ow">in</span> <span class="n">mnis</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="nb">property</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
+                                    <span class="n">src_files</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_anat_files</span><span class="p">(</span><span class="n">process</span><span class="o">=</span><span class="n">process</span><span class="p">,</span>
+                                                                     <span class="n">subj_id</span><span class="o">=</span><span class="n">subj_id</span><span class="p">,</span>
+                                                                     <span class="n">atlas</span><span class="o">=</span><span class="n">atlas</span><span class="p">,</span>
+                                                                     <span class="n">mni</span><span class="o">=</span><span class="n">mni</span><span class="p">,</span>
+                                                                     <span class="nb">property</span><span class="o">=</span><span class="nb">property</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;rest&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">pro</span> <span class="ow">in</span> <span class="n">process</span><span class="p">:</span>
+                        <span class="n">src_files</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rest_files</span><span class="p">(</span><span class="n">process</span><span class="o">=</span><span class="n">process</span><span class="p">,</span>
+                                                         <span class="n">subj_id</span><span class="o">=</span><span class="n">subj_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;task&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">pro</span> <span class="ow">in</span> <span class="n">process</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+                            <span class="n">src_files</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_files</span><span class="p">(</span><span class="n">process</span><span class="o">=</span><span class="n">process</span><span class="p">,</span>
+                                                             <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span>
+                                                             <span class="n">subj_id</span><span class="o">=</span><span class="n">subj_id</span><span class="p">)</span>
+        <span class="c"># Massage paths, based on fetcher type.</span>
+        <span class="n">out_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prepend</span><span class="p">(</span><span class="n">src_files</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out_files</span></div></div>
+</pre></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="col-md-3 hidden-xs" id="sidebar-wrapper">
+  <div class="sidebar hidden-xs" role="navigation" aria-label="main navigation">
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-inline" action="../../../search.html" method="get">
+      <div class="input-append input-group">
+        <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+        <span class="input-group-btn">
+        <input type="submit" class="btn" value="Go" />
+        </span>
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row footer-relbar">
+<div id="navbar-related" class=" related navbar navbar-inverse" role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav navbar-nav ">
+        <li><a href="../../../index.html">nidata  documentation</a></li>
+    </ul>
+<ul class="nav navbar-nav pull-right hidden-xs hidden-sm">
+      
+        <li><a href="../../../py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="../../../genindex.html" title="General Index" >index</a></li>
+        <li><a href="../../index.html" >Module code</a></li>
+        <li><a href="#">top</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2016, Frank Liao.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

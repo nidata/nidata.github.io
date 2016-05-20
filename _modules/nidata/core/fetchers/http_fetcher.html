@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>nidata.core.fetchers.http_fetcher &mdash; nidata  documentation</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+
+<link rel="stylesheet" href="../../../../_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" id="current-theme" href="../../../../_static/css/bootstrap3/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" id="current-adjust-theme" type="text/css" />
+
+<link rel="stylesheet" href="../../../../_static/css/font-awesome.min.css">
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+</style>
+
+<link rel="stylesheet" href="../../../../_static/css/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    '../../../../',
+            VERSION:     '',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+    <script type="text/javascript" src="../../../../_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/bootstrap3.min.js"></script>
+<script type="text/javascript" src="../../../../_static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="../../../../_static/js/basicstrap.js"></script>
+<script type="text/javascript">
+</script>
+    <link rel="top" title="nidata  documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body role="document">
+    <div id="navbar-top" class="navbar navbar-fixed-top navbar-inverse" role="navigation" aria-label="top navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../../../index.html">nidata  documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+            
+              <li><a href="../../../../py-modindex.html" title="Python Module Index" >modules </a></li>
+              <li><a href="../../../../genindex.html" title="General Index" accesskey="I">index </a></li>
+              <li><a href="../../../index.html" accesskey="U">Module code</a></li>
+            
+
+            <li class="visible-xs">
+                <form class="search form-search form-inline navbar-form navbar-right sp-searchbox" action="../../../../search.html" method="get">
+                  <div class="input-append input-group">
+                    <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+                    <span class="input-group-btn">
+                    <input type="submit" class="btn" value="Go" />
+                    </span>
+                  </div>
+                  <input type="hidden" name="check_keywords" value="yes" />
+                  <input type="hidden" name="area" value="default" />
+                </form>
+            </li>
+
+            
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+      <!-- row -->
+      <div class="row">
+        
+        
+
+        <div class="col-md-9" id="content-wrapper">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <h1>Source code for nidata.core.fetchers.http_fetcher</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">fnmatch</span>
+
+<span class="kn">from</span> <span class="nn">.._utils.compat</span> <span class="kn">import</span> <span class="n">cPickle</span><span class="p">,</span> <span class="n">_urllib</span><span class="p">,</span> <span class="n">md5_hash</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">chunk_report</span><span class="p">,</span> <span class="n">Fetcher</span><span class="p">,</span> <span class="n">md5_sum_file</span>
+
+
+<div class="viewcode-block" id="movetree"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.http_fetcher.movetree">[docs]</a><span class="k">def</span> <span class="nf">movetree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Move an entire tree to another directory. Any existing file is</span>
+<span class="sd">    overwritten&quot;&quot;&quot;</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+
+    <span class="c"># Create destination dir if it does not exist</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="n">srcname</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">dstname</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">srcname</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dstname</span><span class="p">):</span>
+                <span class="n">movetree</span><span class="p">(</span><span class="n">srcname</span><span class="p">,</span> <span class="n">dstname</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">(</span><span class="n">srcname</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">srcname</span><span class="p">,</span> <span class="n">dstname</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">error</span><span class="p">)</span> <span class="k">as</span> <span class="n">why</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">srcname</span><span class="p">,</span> <span class="n">dstname</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">why</span><span class="p">)))</span>
+        <span class="c"># catch the Error from the recursive movetree so that we can</span>
+        <span class="c"># continue with other files</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_tree</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return a directory tree under the form of a dictionaries and list</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    path: string</span>
+<span class="sd">        Path browsed</span>
+
+<span class="sd">    pattern: string, optional</span>
+<span class="sd">        Pattern used to filter files (see fnmatch)</span>
+
+<span class="sd">    dictionary: boolean, optional</span>
+<span class="sd">        If True, the function will return a dict instead of a list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">dirs</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">dictionary</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">file_</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dictionary</span><span class="p">:</span>
+                <span class="n">dirs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">file_</span><span class="p">,</span> <span class="n">_tree</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dirs</span><span class="p">[</span><span class="n">file_</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tree</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">file_</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dictionary</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dirs</span><span class="p">)</span> <span class="o">+</span> <span class="n">files</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dirs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">files</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">dirs</span><span class="p">[</span><span class="s">&#39;.&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">files</span>
+    <span class="k">return</span> <span class="n">dirs</span>
+
+
+<span class="k">def</span> <span class="nf">_chunk_read_</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">local_file</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span> <span class="n">report_hook</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">initial_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_size</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Download a file chunk by chunk and show advancement</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    response: _urllib.response.addinfourl</span>
+<span class="sd">        Response to the download request in order to get file size</span>
+
+<span class="sd">    local_file: file</span>
+<span class="sd">        Hard disk file where data should be written</span>
+
+<span class="sd">    chunk_size: int, optional</span>
+<span class="sd">        Size of downloaded chunks. Default: 8192</span>
+
+<span class="sd">    report_hook: bool</span>
+<span class="sd">        Whether or not to show downloading advancement. Default: None</span>
+
+<span class="sd">    initial_size: int, optional</span>
+<span class="sd">        If resuming, indicate the initial size of the file</span>
+
+<span class="sd">    total_size: int, optional</span>
+<span class="sd">        Expected final size of download (None means it is unknown).</span>
+
+<span class="sd">    verbose: int, optional</span>
+<span class="sd">        verbosity level (0 means no message).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data: string</span>
+<span class="sd">        The downloaded file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">total_size</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Content-Length&#39;</span><span class="p">,</span> <span class="s">&#39;110000000&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_size</span><span class="p">)</span> <span class="o">+</span> <span class="n">initial_size</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Warning: total size could not be determined.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;Full stack trace: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">bytes_so_far</span> <span class="o">=</span> <span class="n">initial_size</span>
+
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+        <span class="n">bytes_so_far</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">report_hook</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+        <span class="n">local_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">report_hook</span><span class="p">:</span>
+            <span class="n">chunk_report</span><span class="p">(</span><span class="n">bytes_so_far</span><span class="p">,</span> <span class="n">total_size</span><span class="p">,</span> <span class="n">initial_size</span><span class="p">,</span> <span class="n">t0</span><span class="p">)</span>
+
+    <span class="k">return</span>
+
+
+<span class="k">def</span> <span class="nf">_uncompress_file</span><span class="p">(</span><span class="n">file_</span><span class="p">,</span> <span class="n">delete_archive</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Uncompress files contained in a data_set.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file: string</span>
+<span class="sd">        path of file to be uncompressed.</span>
+
+<span class="sd">    delete_archive: bool, optional</span>
+<span class="sd">        Whether or not to delete archive once it is uncompressed.</span>
+<span class="sd">        Default: True</span>
+
+<span class="sd">    verbose: int, optional</span>
+<span class="sd">        verbosity level (0 means no message).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This handles zip, tar, gzip and bzip files only.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Extracting data from </span><span class="si">%s</span><span class="s">...&#39;</span> <span class="o">%</span> <span class="n">file_</span><span class="p">)</span>
+    <span class="n">data_dir</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
+    <span class="c"># We first try to see if it is a zip file</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">fd</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">processed</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">file_</span><span class="p">):</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
+            <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+            <span class="n">z</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">processed</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.gz&#39;</span> <span class="ow">or</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">b</span><span class="s">&#39;</span><span class="se">\x1f\x8b</span><span class="s">&#39;</span><span class="p">):</span>
+            <span class="kn">import</span> <span class="nn">gzip</span>
+            <span class="n">gz</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.tgz&#39;</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;.tar&#39;</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">gz</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="mi">8192</span><span class="p">)</span>
+            <span class="n">gz</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="c"># If file is .tar.gz, this will be handle in the next case</span>
+            <span class="k">if</span> <span class="n">delete_archive</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
+            <span class="n">file_</span> <span class="o">=</span> <span class="n">filename</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
+            <span class="n">processed</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">if</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">is_tarfile</span><span class="p">(</span><span class="n">file_</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+                <span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">data_dir</span><span class="p">)</span>
+            <span class="n">processed</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">processed</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;[Uncompress] unknown archive file format: &quot;</span>
+                          <span class="s">&quot;</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">file_</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">delete_archive</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;   ...done.&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;Error uncompressing file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">raise</span>
+
+
+<span class="k">def</span> <span class="nf">_fetch_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">md5sum</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">handlers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load requested file, downloading it if needed or requested.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    url: string</span>
+<span class="sd">        Contains the url of the file to be downloaded.</span>
+
+<span class="sd">    data_dir: string, optional</span>
+<span class="sd">        Path of the data directory. Used to force data storage in a specified</span>
+<span class="sd">        location. Default: None</span>
+
+<span class="sd">    resume: bool, optional</span>
+<span class="sd">        If true, try to resume partially downloaded files</span>
+
+<span class="sd">    overwrite: bool, optional</span>
+<span class="sd">        If true and file already exists, delete it.</span>
+
+<span class="sd">    md5sum: string, optional</span>
+<span class="sd">        MD5 sum of the file. Checked if download of the file is required</span>
+
+<span class="sd">    username: string, optional</span>
+<span class="sd">        Username used for HTTP authentication</span>
+
+<span class="sd">    passwd: string, optional</span>
+<span class="sd">        Password used for HTTP authentication</span>
+
+<span class="sd">    handlers: list of BaseHandler, optional</span>
+<span class="sd">        urllib handlers passed to urllib.request.build_opener. Used by</span>
+<span class="sd">        advanced users to customize request handling.</span>
+
+<span class="sd">    headers: dictionary, specifying headers</span>
+
+<span class="sd">    cookies: dictionary, specifying cookies</span>
+
+<span class="sd">    verbose: int, optional</span>
+<span class="sd">        verbosity level (0 means no message).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    files: string</span>
+<span class="sd">        Absolute path of downloaded file.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If, for any reason, the download procedure fails, all downloaded files are</span>
+<span class="sd">    removed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">handlers</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">handlers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">headers</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(),</span>
+    <span class="k">if</span> <span class="n">cookies</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cookies</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="c"># Determine data path</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+
+    <span class="c"># Determine filename using URL</span>
+    <span class="n">parse</span> <span class="o">=</span> <span class="n">_urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">parse</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">file_name</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">md5_hash</span><span class="p">(</span><span class="n">parse</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">temp_file_name</span> <span class="o">=</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s">&quot;.part&quot;</span>
+    <span class="n">full_name</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+    <span class="n">temp_full_name</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">temp_file_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">full_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">full_name</span>
+    <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">temp_full_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">temp_full_name</span><span class="p">)</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">local_file</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">initial_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Download data</span>
+        <span class="k">if</span> <span class="n">username</span><span class="p">:</span>
+            <span class="c"># Make sure we&#39;re secure, basic auth is unencrypted</span>
+            <span class="k">if</span> <span class="n">parse</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">and</span> <span class="n">parse</span><span class="o">.</span><span class="n">scheme</span> <span class="o">!=</span> <span class="s">&#39;https&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Specifying username currently requires using&quot;</span>
+                                 <span class="s">&quot; a secure (https) URL (</span><span class="si">%s</span><span class="s">).&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+            <span class="n">password_mgr</span> <span class="o">=</span> <span class="n">_urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">HTTPPasswordMgrWithDefaultRealm</span><span class="p">()</span>
+            <span class="n">password_mgr</span><span class="o">.</span><span class="n">add_password</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">)</span>
+            <span class="c"># Don&#39;t append, don&#39;t want to update caller&#39;s list with this!</span>
+            <span class="n">handlers</span> <span class="o">=</span> <span class="p">([</span><span class="n">_urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">HTTPBasicAuthHandler</span><span class="p">(</span><span class="n">password_mgr</span><span class="p">)]</span> <span class="o">+</span>
+                        <span class="n">handlers</span><span class="p">)</span>
+        <span class="n">url_opener</span> <span class="o">=</span> <span class="n">_urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="o">*</span><span class="n">handlers</span><span class="p">)</span>
+
+        <span class="c"># Prep the request (add headers, cookies)</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">_urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Connection&#39;</span><span class="p">,</span> <span class="s">&#39;Keep-Alive&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cookies</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s">&#39;Cookie&#39;</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
+                <span class="n">headers</span><span class="p">[</span><span class="s">&#39;Cookie&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s">&#39;;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">headers</span><span class="p">[</span><span class="s">&#39;Cookie&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="n">headers</span><span class="p">[</span><span class="s">&#39;Cookie&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                                           <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cookies</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="k">for</span> <span class="n">header_name</span><span class="p">,</span> <span class="n">header_val</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="n">header_name</span><span class="p">,</span> <span class="n">header_val</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">displayed_url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">url</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;Downloading data from </span><span class="si">%s</span><span class="s"> ...&#39;</span> <span class="o">%</span> <span class="n">displayed_url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">resume</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">temp_full_name</span><span class="p">):</span>
+            <span class="c"># Simple case: no resume</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">url_opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+            <span class="n">local_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_full_name</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Complex case: download has been interrupted, we try to resume it.</span>
+            <span class="n">local_file_size</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">temp_full_name</span><span class="p">)</span>
+            <span class="c"># If the file exists, then only download the remainder</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&quot;Range&quot;</span><span class="p">,</span> <span class="s">&quot;bytes=</span><span class="si">%s</span><span class="s">-&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">local_file_size</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">url_opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+                <span class="n">content_range</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">info</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Content-Range&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">content_range</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">content_range</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                        <span class="s">&#39;bytes </span><span class="si">%s</span><span class="s">-&#39;</span> <span class="o">%</span> <span class="n">local_file_size</span><span class="p">)):</span>
+                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;Server does not support resuming&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="c"># A wide number of errors can be raised here. HTTPError,</span>
+                <span class="c"># URLError... I prefer to catch them all and rerun without</span>
+                <span class="c"># resuming.</span>
+                <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Resuming failed, try to download the whole file.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_fetch_file</span><span class="p">(</span>
+                    <span class="n">url</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+                    <span class="n">md5sum</span><span class="o">=</span><span class="n">md5sum</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="n">passwd</span><span class="p">,</span>
+                    <span class="n">handlers</span><span class="o">=</span><span class="n">handlers</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="n">cookies</span><span class="p">,</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">local_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_full_name</span><span class="p">,</span> <span class="s">&quot;ab&quot;</span><span class="p">)</span>
+                <span class="n">initial_size</span> <span class="o">=</span> <span class="n">local_file_size</span>
+
+        <span class="c"># Download the file.</span>
+        <span class="n">_chunk_read_</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">local_file</span><span class="p">,</span> <span class="n">report_hook</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span>
+                     <span class="n">initial_size</span><span class="o">=</span><span class="n">initial_size</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+        <span class="c"># temp file must be closed prior to the move</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">local_file</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="n">local_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">temp_full_name</span><span class="p">,</span> <span class="n">full_name</span><span class="p">)</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;...done. (</span><span class="si">%i</span><span class="s"> seconds, </span><span class="si">%i</span><span class="s"> min)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">dt</span> <span class="o">//</span> <span class="mi">60</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">_urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error while fetching file </span><span class="si">%s</span><span class="s">. &quot;</span>
+                  <span class="s">&quot;Dataset fetching aborted.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">file_name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;HTTP Error: </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">url</span><span class="p">))</span>
+        <span class="k">raise</span>
+    <span class="k">except</span> <span class="n">_urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">URLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error while fetching file </span><span class="si">%s</span><span class="s">. &quot;</span>
+                  <span class="s">&quot;Dataset fetching aborted.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">file_name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;URL Error: </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">url</span><span class="p">))</span>
+        <span class="k">raise</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">local_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">local_file</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="n">local_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">md5sum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">md5_sum_file</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span> <span class="o">!=</span> <span class="n">md5sum</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;File </span><span class="si">%s</span><span class="s"> checksum verification has failed.&quot;</span>
+                             <span class="s">&quot; Dataset fetching aborted.&quot;</span> <span class="o">%</span> <span class="n">local_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">full_name</span>
+
+
+<div class="viewcode-block" id="fetch_files"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.http_fetcher.fetch_files">[docs]</a><span class="k">def</span> <span class="nf">fetch_files</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">delete_archive</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load requested dataset, downloading it if needed or requested.</span>
+
+<span class="sd">    This function retrieves files from the hard drive or download them from</span>
+<span class="sd">    the given urls. Note to developers: All the files will be first</span>
+<span class="sd">    downloaded in a sandbox and, if everything goes well, they will be moved</span>
+<span class="sd">    into the folder of the dataset. This prevents corrupting previously</span>
+<span class="sd">    downloaded data. In case of a big dataset, do not hesitate to make several</span>
+<span class="sd">    calls if needed.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_name: string</span>
+<span class="sd">        Unique dataset name</span>
+
+<span class="sd">    files: list of (string, string, dict)</span>
+<span class="sd">        List of files and their corresponding url. The dictionary contains</span>
+<span class="sd">        options regarding the files. Options supported are &#39;uncompress&#39; to</span>
+<span class="sd">        indicates that the file is an archive, &#39;md5sum&#39; to check the md5 sum of</span>
+<span class="sd">        the file and &#39;move&#39; if renaming the file or moving it to a subfolder is</span>
+<span class="sd">        needed.</span>
+
+<span class="sd">    data_dir: string, optional</span>
+<span class="sd">        Path of the data directory. Used to force data storage in a specified</span>
+<span class="sd">        location. Default: None</span>
+
+<span class="sd">    resume: bool, optional</span>
+<span class="sd">        If true, try resuming download if possible</span>
+
+<span class="sd">    mock: boolean, optional</span>
+<span class="sd">        If true, create empty files if the file cannot be downloaded. Test use</span>
+<span class="sd">        only.</span>
+
+<span class="sd">    verbose: int, optional</span>
+<span class="sd">        verbosity level (0 means no message).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    files: list of string</span>
+<span class="sd">        Absolute paths of downloaded files on disk</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># We may be in a global read-only repository. If so, we cannot</span>
+    <span class="c"># download files.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Dataset files are missing but dataset&#39;</span>
+                         <span class="s">&#39; repository is read-only. Contact your data&#39;</span>
+                         <span class="s">&#39; administrator to solve the problem&#39;</span><span class="p">)</span>
+
+    <span class="c"># Create destination dirs</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+
+    <span class="n">files_</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file_</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">opts</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="c"># There are two working directories here:</span>
+        <span class="c"># - data_dir is the destination directory of the dataset</span>
+        <span class="c"># - temp_dir is a temporary directory dedicated to this fetching call.</span>
+        <span class="c">#   All files that must be downloaded will be in this directory. If a</span>
+        <span class="c">#   corrupted file is found, or a file is missing, this working</span>
+        <span class="c">#   directory will be deleted.</span>
+        <span class="n">files_pickle</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">files_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">files_pickle</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="n">temp_dir</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">files_md5</span><span class="p">)</span>
+
+        <span class="c"># 3 possibilities:</span>
+        <span class="c"># - the file exists in data_dir, nothing to do.</span>
+        <span class="c"># - the file does not exists: we download it in temp_dir</span>
+        <span class="c"># - the file exists in temp_dir: this can happen if an archive has been</span>
+        <span class="c">#   downloaded. There is nothing to do</span>
+
+        <span class="c"># Target file in the data_dir</span>
+        <span class="n">target_file</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">file_</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_file</span><span class="p">):</span>
+            <span class="c"># if not op.exists(temp_target_dir):</span>
+            <span class="c">#     os.makedirs(temp_target_dir)</span>
+            <span class="c"># Fetch the file, if it doesn&#39;t already exist.</span>
+            <span class="n">fetched_file</span> <span class="o">=</span> <span class="n">_fetch_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">,</span>
+                                       <span class="n">resume</span><span class="o">=</span><span class="n">resume</span><span class="p">,</span>
+                                       <span class="n">overwrite</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+                                       <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                                       <span class="n">md5sum</span><span class="o">=</span><span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;md5sum&#39;</span><span class="p">),</span>
+                                       <span class="n">username</span><span class="o">=</span><span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">),</span>
+                                       <span class="n">passwd</span><span class="o">=</span><span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;passwd&#39;</span><span class="p">),</span>
+                                       <span class="n">handlers</span><span class="o">=</span><span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;handlers&#39;</span><span class="p">,</span> <span class="p">[]),</span>
+                                       <span class="n">headers</span><span class="o">=</span><span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;headers&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">()),</span>
+                                       <span class="n">cookies</span><span class="o">=</span><span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;cookies&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">()))</span>
+
+            <span class="c"># First, uncompress.</span>
+            <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;uncompress&#39;</span><span class="p">):</span>
+                <span class="n">target_files</span> <span class="o">=</span> <span class="n">_uncompress_file</span><span class="p">(</span><span class="n">fetched_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                                                <span class="n">delete_archive</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">target_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">fetched_file</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;move&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;Move options has been removed.&#39;</span><span class="p">)</span>
+
+                <span class="c"># XXX: here, move is supposed to be a dir, it can be a name</span>
+                <span class="n">move_dir</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">opts</span><span class="p">[</span><span class="s">&#39;move&#39;</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">target_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">move_dir</span><span class="p">),</span>
+                                    <span class="n">op</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+                                    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">target_files</span><span class="p">]</span>
+                    <span class="c"># Do the move</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">move_dir</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">move_dir</span><span class="p">)</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">fetched_file</span><span class="p">,</span> <span class="n">move_dir</span><span class="p">)</span>
+                    <span class="n">target_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">move_dir</span><span class="p">]</span>
+
+            <span class="c"># Let&#39;s examine our work</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_file</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fetched_file</span><span class="p">):</span>
+                    <span class="n">target_dir</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">target_file</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_dir</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">target_dir</span><span class="p">)</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">fetched_file</span><span class="p">,</span> <span class="n">target_file</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;An error occurred while fetching </span><span class="si">%s</span><span class="s">; &quot;</span>
+                                    <span class="s">&quot;the expected target file cannot be found.&quot;</span>
+                                    <span class="s">&quot; (</span><span class="si">%s</span><span class="s">)</span><span class="se">\n</span><span class="s">Debug info: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                        <span class="n">file_</span><span class="p">,</span> <span class="n">target_file</span><span class="p">,</span>
+                                        <span class="p">{</span><span class="s">&#39;fetched_file&#39;</span><span class="p">:</span> <span class="n">fetched_file</span><span class="p">,</span>
+                                         <span class="s">&#39;target_files&#39;</span><span class="p">:</span> <span class="n">target_files</span><span class="p">}))</span>
+
+            <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;uncompress&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">delete_archive</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fetched_file</span><span class="p">)</span>
+
+            <span class="c"># If needed, move files from temps directory to final directory.</span>
+            <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">):</span>
+                <span class="c"># XXX We could only moved the files requested</span>
+                <span class="c"># XXX Movetree can go wrong</span>
+                <span class="n">movetree</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">)</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span>
+
+        <span class="n">files_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">files_</span></div>
+
+
+<div class="viewcode-block" id="copytree"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.http_fetcher.copytree">[docs]</a><span class="k">def</span> <span class="nf">copytree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">symlinks</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">shutil</span>
+    <span class="kn">import</span> <span class="nn">stat</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copystat</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+    <span class="n">lst</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ignore</span><span class="p">:</span>
+        <span class="n">excl</span> <span class="o">=</span> <span class="n">ignore</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">lst</span><span class="p">)</span>
+        <span class="n">lst</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">lst</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">excl</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">symlinks</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">lexists</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">d</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">lstat</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IMODE</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">st_mode</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">lchmod</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c"># lchmod not available</span>
+        <span class="k">elif</span> <span class="n">op</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="n">copytree</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">symlinks</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HttpFetcher"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.http_fetcher.HttpFetcher">[docs]</a><span class="k">class</span> <span class="nc">HttpFetcher</span><span class="p">(</span><span class="n">Fetcher</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HttpFetcher</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">data_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">passwd</span> <span class="o">=</span> <span class="n">passwd</span>
+
+<div class="viewcode-block" id="HttpFetcher.fetch"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.http_fetcher.HttpFetcher.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">delete_archive</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reformat_files</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>  <span class="c"># allows flexibility</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">tgt</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">opts</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">opts</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+                <span class="n">opts</span><span class="p">[</span><span class="s">&#39;passwd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;passwd&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fetch_files</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="n">resume</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+                           <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">delete_archive</span><span class="o">=</span><span class="n">delete_archive</span><span class="p">)</span></div></div>
+</pre></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="col-md-3 hidden-xs" id="sidebar-wrapper">
+  <div class="sidebar hidden-xs" role="navigation" aria-label="main navigation">
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-inline" action="../../../../search.html" method="get">
+      <div class="input-append input-group">
+        <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+        <span class="input-group-btn">
+        <input type="submit" class="btn" value="Go" />
+        </span>
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row footer-relbar">
+<div id="navbar-related" class=" related navbar navbar-inverse" role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav navbar-nav ">
+        <li><a href="../../../../index.html">nidata  documentation</a></li>
+    </ul>
+<ul class="nav navbar-nav pull-right hidden-xs hidden-sm">
+      
+        <li><a href="../../../../py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="../../../../genindex.html" title="General Index" >index</a></li>
+        <li><a href="../../../index.html" >Module code</a></li>
+        <li><a href="#">top</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2016, Frank Liao.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

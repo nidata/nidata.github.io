@@ -1,0 +1,10 @@
+nidata.atlas.icbm152_2009 package
+=================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.atlas.icbm152_2009
+    :members:
+    :undoc-members:
+    :show-inheritance:

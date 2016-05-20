@@ -1,0 +1,10 @@
+nidata.multimodal.my_connectome_2015 package
+============================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.multimodal.my_connectome_2015
+    :members:
+    :undoc-members:
+    :show-inheritance:

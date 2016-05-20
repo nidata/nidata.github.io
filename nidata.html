@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>Anatomical Package &mdash; nidata  documentation</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+
+<link rel="stylesheet" href="_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" id="current-theme" href="_static/css/bootstrap3/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" id="current-adjust-theme" type="text/css" />
+
+<link rel="stylesheet" href="_static/css/font-awesome.min.css">
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+</style>
+
+<link rel="stylesheet" href="_static/css/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    './',
+            VERSION:     '',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+    <script type="text/javascript" src="_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/bootstrap3.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="_static/js/basicstrap.js"></script>
+<script type="text/javascript">
+</script>
+    <link rel="top" title="nidata  documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div id="navbar-top" class="navbar navbar-fixed-top navbar-inverse" role="navigation" aria-label="top navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">nidata  documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown visible-xs">
+                <a role="button" id="localToc" data-toggle="dropdown" data-target="#" href="#">Table Of Contents <b class="caret"></b></a>
+                <ul class="dropdown-menu localtoc sp-localtoc" role="menu" aria-labelledby="localToc">
+                <ul>
+<li><a class="reference internal" href="#"><code class="docutils literal"><span class="pre">Anatomical</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-nidata.atlas"><code class="docutils literal"><span class="pre">Atlas</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-nidata.core"><code class="docutils literal"><span class="pre">Core</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-nidata.diffusion"><code class="docutils literal"><span class="pre">Diffusion</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-nidata.version">nidata.version module</a></li>
+<li><a class="reference internal" href="#module-nidata">Module contents</a></li>
+</ul>
+
+                </ul>
+              </li>
+
+            
+              <li><a href="py-modindex.html" title="Python Module Index" >modules </a></li>
+              <li><a href="genindex.html" title="General Index" accesskey="I">index </a></li>
+            
+            <li class="visible-xs"><a href="_sources/nidata.txt" rel="nofollow">Show Source</a></li>
+
+            <li class="visible-xs">
+                <form class="search form-search form-inline navbar-form navbar-right sp-searchbox" action="search.html" method="get">
+                  <div class="input-append input-group">
+                    <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+                    <span class="input-group-btn">
+                    <input type="submit" class="btn" value="Go" />
+                    </span>
+                  </div>
+                  <input type="hidden" name="check_keywords" value="yes" />
+                  <input type="hidden" name="area" value="default" />
+                </form>
+            </li>
+
+            
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+      <!-- row -->
+      <div class="row">
+        
+        
+
+        <div class="col-md-9" id="content-wrapper">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <div class="toctree-wrapper compound" id="table-of-contents">
+<p class="caption"><span class="caption-text">Table of Contents</span><a class="headerlink" href="#table-of-contents" title="Permalink to this toctree">¶</a></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="nidata.anatomical.html">1. nidata.anatomical package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nidata.anatomical.PING.html">1.1.1. nidata.anatomical.PING package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.anatomical.oasis_vbm.html">1.1.2. nidata.anatomical.oasis_vbm package</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nidata.atlas.html">2. nidata.atlas package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nidata.atlas.craddock_2012.html">2.1.1. nidata.atlas.craddock_2012 package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.atlas.harvard_oxford.html">2.1.2. nidata.atlas.harvard_oxford package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.atlas.haxby_etal_2011.html">2.1.3. nidata.atlas.haxby_etal_2011 package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.atlas.icbm152_2009.html">2.1.4. nidata.atlas.icbm152_2009 package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.atlas.mni152_template.html">2.1.5. nidata.atlas.mni152_template package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.atlas.msdl_atlas.html">2.1.6. nidata.atlas.msdl_atlas package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.atlas.power_2011.html">2.1.7. nidata.atlas.power_2011 package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.atlas.smith_2009.html">2.1.8. nidata.atlas.smith_2009 package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.atlas.yeo_2011.html">2.1.9. nidata.atlas.yeo_2011 package</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nidata.core.html">3. nidata.core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nidata.core.datasets.html">3.1.1. nidata.core.datasets package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.core.fetchers.html">3.1.2. nidata.core.fetchers package</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nidata.diffusion.html">4. nidata.diffusion package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nidata.localizer.html">5. nidata.localizer package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nidata.localizer.brainomics.html">5.1.1. nidata.localizer.brainomics package</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nidata.multimodal.html">6. nidata.multimodal package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nidata.multimodal.hcp.html">6.1.1. nidata.multimodal.hcp package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.multimodal.my_connectome_2015.html">6.1.2. nidata.multimodal.my_connectome_2015 package</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nidata.resting_state.html">7. nidata.resting_state package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nidata.resting_state.ABIDE_pcp.html">7.1.1. nidata.resting_state.ABIDE_pcp package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.resting_state.adhd.html">7.1.2. nidata.resting_state.adhd package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.resting_state.nyu.html">7.1.3. nidata.resting_state.nyu package</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nidata.task.html">8. nidata.task package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nidata.task.haxby_etal_2001.html">8.1.1. nidata.task.haxby_etal_2001 package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.task.miyawaki_2008.html">8.1.2. nidata.task.miyawaki_2008 package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.task.neurovault.html">8.1.3. nidata.task.neurovault package</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nidata.task.poldrack_etal_2001.html">8.1.4. nidata.task.poldrack_etal_2001 package</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="module-nidata.anatomical">
+<span id="anatomical-package"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">Anatomical</span></code> Package<a class="headerlink" href="#module-nidata.anatomical" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="nidata.anatomical.OasisVbmDataset">
+<em class="property">class </em><code class="descclassname">nidata.anatomical.</code><code class="descname">OasisVbmDataset</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/anatomical/oasis_vbm.html#OasisVbmDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.anatomical.OasisVbmDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="nidata.core.datasets.html#nidata.core.datasets.NilearnDataset" title="nidata.core.datasets.NilearnDataset"><code class="xref py py-class docutils literal"><span class="pre">nidata.core.datasets.NilearnDataset</span></code></a></p>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="nidata.anatomical.OasisVbmDataset.fetch">
+<code class="descname">fetch</code><span class="sig-paren">(</span><em>n_subjects=None</em>, <em>dartel_version=True</em>, <em>url=None</em>, <em>resume=True</em>, <em>force=False</em>, <em>verbose=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/anatomical/oasis_vbm.html#OasisVbmDataset.fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.anatomical.OasisVbmDataset.fetch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nidata.anatomical.OasisVbmDataset.fetcher_function">
+<code class="descname">fetcher_function</code><em class="property"> = 'nilearn.datasets.fetch_oasis_vbm'</em><a class="headerlink" href="#nidata.anatomical.OasisVbmDataset.fetcher_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nidata.anatomical.OasisVbmDataset.nilearn_name">
+<code class="descname">nilearn_name</code><em class="property"> = 'oasis1'</em><a class="headerlink" href="#nidata.anatomical.OasisVbmDataset.nilearn_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nidata.anatomical.PINGDataset">
+<em class="property">class </em><code class="descclassname">nidata.anatomical.</code><code class="descname">PINGDataset</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/anatomical/PING.html#PINGDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.anatomical.PINGDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="nidata.core.datasets.html#nidata.core.datasets.AuthenticatedHttpDataset" title="nidata.core.datasets.AuthenticatedHttpDataset"><code class="xref py py-class docutils literal"><span class="pre">nidata.core.datasets.AuthenticatedHttpDataset</span></code></a></p>
+<p>TODO: PING docstring.</p>
+<p class="rubric">Methods</p>
+<dl class="attribute">
+<dt id="nidata.anatomical.PINGDataset.PASSWD_ENV_VAR">
+<code class="descname">PASSWD_ENV_VAR</code><em class="property"> = 'PING_PASSWORD'</em><a class="headerlink" href="#nidata.anatomical.PINGDataset.PASSWD_ENV_VAR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nidata.anatomical.PINGDataset.USERNAME_ENV_VAR">
+<code class="descname">USERNAME_ENV_VAR</code><em class="property"> = 'PING_USERNAME'</em><a class="headerlink" href="#nidata.anatomical.PINGDataset.USERNAME_ENV_VAR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nidata.anatomical.PINGDataset.dependencies">
+<code class="descname">dependencies</code><em class="property"> = OrderedDict([('pandas', 'pandas'), ('ping', 'git+https://github.com/guruucsd/PING')])</em><a class="headerlink" href="#nidata.anatomical.PINGDataset.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nidata.anatomical.PINGDataset.fetch">
+<code class="descname">fetch</code><span class="sig-paren">(</span><em>n_subjects=1</em>, <em>url=None</em>, <em>resume=True</em>, <em>force=False</em>, <em>verbose=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/anatomical/PING.html#PINGDataset.fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.anatomical.PINGDataset.fetch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nidata.anatomical.PINGDataset.mod">
+<code class="descname">mod</code><em class="property"> = 'pandas'</em><a class="headerlink" href="#nidata.anatomical.PINGDataset.mod" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.anatomical.fetch_oasis_vbm">
+<code class="descclassname">nidata.anatomical.</code><code class="descname">fetch_oasis_vbm</code><span class="sig-paren">(</span><em>data_dir=None</em>, <em>n_subjects=None</em>, <em>dartel_version=True</em>, <em>url=None</em>, <em>resume=True</em>, <em>verbose=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/anatomical/oasis_vbm.html#fetch_oasis_vbm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.anatomical.fetch_oasis_vbm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-nidata.atlas">
+<span id="atlas-package"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">Atlas</span></code> Package<a class="headerlink" href="#module-nidata.atlas" title="Permalink to this headline">¶</a></h1>
+<p>Datasets defining cortical parcellations.</p>
+</div>
+<div class="section" id="module-nidata.core">
+<span id="core-package"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">Core</span></code> Package<a class="headerlink" href="#module-nidata.core" title="Permalink to this headline">¶</a></h1>
+<p>Common functions for dataset fetching and image utilities.</p>
+</div>
+<div class="section" id="module-nidata.diffusion">
+<span id="diffusion-package"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">Diffusion</span></code> Package<a class="headerlink" href="#module-nidata.diffusion" title="Permalink to this headline">¶</a></h1>
+<dl class="exception">
+<dt id="nidata.diffusion.FetcherError">
+<em class="property">exception </em><code class="descclassname">nidata.diffusion.</code><code class="descname">FetcherError</code><a class="reference internal" href="_modules/nidata/diffusion.html#FetcherError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.FetcherError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.check_md5">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">check_md5</code><span class="sig-paren">(</span><em>filename</em>, <em>stored_md5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#check_md5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.check_md5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the md5 of filename and check if it matches with the supplied string md5</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_data">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_data</code><span class="sig-paren">(</span><em>files</em>, <em>folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads files to folder and checks their md5 checksums</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>files</strong> : dictionary</p>
+<blockquote>
+<div><p>For each file in <cite>files</cite> the value should be (url, md5). The file will
+be downloaded from url if the file does not already exist or if the
+file exists but the md5 checksum does not match.</p>
+</div></blockquote>
+<p><strong>folder</strong> : str</p>
+<blockquote>
+<div><p>The directory where to save the file, the directory will be created if
+it does not already exist.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>FetcherError</strong></p>
+<blockquote class="last">
+<div><p>Raises if the md5 checksum of the file does not match the expected
+value. The downloaded file is not deleted when this error is raised.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_isbi2013_2shell">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_isbi2013_2shell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_isbi2013_2shell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_isbi2013_2shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a 2-shell software phantom dataset</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_scil_b0">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_scil_b0</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_scil_b0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_scil_b0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download b=0 datasets from multiple MR systems (GE, Philips, Siemens) and
+different magnetic fields (1.5T and 3T)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_sherbrooke_3shell">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_sherbrooke_3shell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_sherbrooke_3shell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_sherbrooke_3shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a 3shell HARDI dataset with 192 gradient directions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_stanford_hardi">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_stanford_hardi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_stanford_hardi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_stanford_hardi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a HARDI dataset with 160 gradient directions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_stanford_labels">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_stanford_labels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_stanford_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_stanford_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download reduced freesurfer aparc image from stanford web site.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_stanford_pve_maps">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_stanford_pve_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_stanford_pve_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_stanford_pve_maps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_stanford_t1">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_stanford_t1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_stanford_t1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_stanford_t1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_syn_data">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_syn_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_syn_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_syn_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download t1 and b0 volumes from the same session</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.fetch_taiwan_ntu_dsi">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">fetch_taiwan_ntu_dsi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#fetch_taiwan_ntu_dsi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.fetch_taiwan_ntu_dsi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a DSI dataset with 203 gradient directions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_isbi2013_2shell">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_isbi2013_2shell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_isbi2013_2shell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_isbi2013_2shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load ISBI 2013 2-shell synthetic dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>img</strong> : obj,</p>
+<blockquote>
+<div><p>Nifti1Image</p>
+</div></blockquote>
+<p><strong>gtab</strong> : obj,</p>
+<blockquote class="last">
+<div><p>GradientTable</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_scil_b0">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_scil_b0</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_scil_b0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_scil_b0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load GE 3T b0 image form the scil b0 dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>img</strong> : obj,</p>
+<blockquote class="last">
+<div><p>Nifti1Image</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_sherbrooke_3shell">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_sherbrooke_3shell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_sherbrooke_3shell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_sherbrooke_3shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Sherbrooke 3-shell HARDI dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>img</strong> : obj,</p>
+<blockquote>
+<div><p>Nifti1Image</p>
+</div></blockquote>
+<p><strong>gtab</strong> : obj,</p>
+<blockquote class="last">
+<div><p>GradientTable</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_siemens_scil_b0">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_siemens_scil_b0</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_siemens_scil_b0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_siemens_scil_b0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Siemens 1.5T b0 image form the scil b0 dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>img</strong> : obj,</p>
+<blockquote class="last">
+<div><p>Nifti1Image</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_stanford_hardi">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_stanford_hardi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_stanford_hardi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_stanford_hardi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Stanford HARDI dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>img</strong> : obj,</p>
+<blockquote>
+<div><p>Nifti1Image</p>
+</div></blockquote>
+<p><strong>gtab</strong> : obj,</p>
+<blockquote class="last">
+<div><p>GradientTable</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_stanford_labels">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_stanford_labels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_stanford_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_stanford_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read stanford hardi data and label map</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_stanford_pve_maps">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_stanford_pve_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_stanford_pve_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_stanford_pve_maps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_stanford_t1">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_stanford_t1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_stanford_t1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_stanford_t1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_syn_data">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_syn_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_syn_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_syn_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load t1 and b0 volumes from the same session</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>t1</strong> : obj,</p>
+<blockquote>
+<div><p>Nifti1Image</p>
+</div></blockquote>
+<p><strong>b0</strong> : obj,</p>
+<blockquote class="last">
+<div><p>Nifti1Image</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nidata.diffusion.read_taiwan_ntu_dsi">
+<code class="descclassname">nidata.diffusion.</code><code class="descname">read_taiwan_ntu_dsi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/diffusion.html#read_taiwan_ntu_dsi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.diffusion.read_taiwan_ntu_dsi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Taiwan NTU dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>img</strong> : obj,</p>
+<blockquote>
+<div><p>Nifti1Image</p>
+</div></blockquote>
+<p><strong>gtab</strong> : obj,</p>
+<blockquote class="last">
+<div><p>GradientTable</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-nidata.version">
+<span id="nidata-version-module"></span><h1>nidata.version module<a class="headerlink" href="#module-nidata.version" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="module-nidata">
+<span id="module-contents"></span><h1>Module contents<a class="headerlink" href="#module-nidata" title="Permalink to this headline">¶</a></h1>
+<p>TODO: Module docstring for nidata</p>
+</div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="col-md-3 hidden-xs" id="sidebar-wrapper">
+  <div class="sidebar hidden-xs" role="navigation" aria-label="main navigation">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><code class="docutils literal"><span class="pre">Anatomical</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-nidata.atlas"><code class="docutils literal"><span class="pre">Atlas</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-nidata.core"><code class="docutils literal"><span class="pre">Core</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-nidata.diffusion"><code class="docutils literal"><span class="pre">Diffusion</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-nidata.version">nidata.version module</a></li>
+<li><a class="reference internal" href="#module-nidata">Module contents</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/nidata.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-inline" action="search.html" method="get">
+      <div class="input-append input-group">
+        <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+        <span class="input-group-btn">
+        <input type="submit" class="btn" value="Go" />
+        </span>
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row footer-relbar">
+<div id="navbar-related" class=" related navbar navbar-inverse" role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav navbar-nav ">
+        <li><a href="index.html">nidata  documentation</a></li>
+    </ul>
+<ul class="nav navbar-nav pull-right hidden-xs hidden-sm">
+      
+        <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="genindex.html" title="General Index" >index</a></li>
+        <li><a href="#">top</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2016, Frank Liao.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

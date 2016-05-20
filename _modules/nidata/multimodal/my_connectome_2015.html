@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>nidata.multimodal.my_connectome_2015 &mdash; nidata  documentation</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" id="current-theme" href="../../../_static/css/bootstrap3/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" id="current-adjust-theme" type="text/css" />
+
+<link rel="stylesheet" href="../../../_static/css/font-awesome.min.css">
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+</style>
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    '../../../',
+            VERSION:     '',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+    <script type="text/javascript" src="../../../_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/bootstrap3.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/basicstrap.js"></script>
+<script type="text/javascript">
+</script>
+    <link rel="top" title="nidata  documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div id="navbar-top" class="navbar navbar-fixed-top navbar-inverse" role="navigation" aria-label="top navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../../index.html">nidata  documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+            
+              <li><a href="../../../py-modindex.html" title="Python Module Index" >modules </a></li>
+              <li><a href="../../../genindex.html" title="General Index" accesskey="I">index </a></li>
+              <li><a href="../../index.html" accesskey="U">Module code</a></li>
+            
+
+            <li class="visible-xs">
+                <form class="search form-search form-inline navbar-form navbar-right sp-searchbox" action="../../../search.html" method="get">
+                  <div class="input-append input-group">
+                    <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+                    <span class="input-group-btn">
+                    <input type="submit" class="btn" value="Go" />
+                    </span>
+                  </div>
+                  <input type="hidden" name="check_keywords" value="yes" />
+                  <input type="hidden" name="area" value="default" />
+                </form>
+            </li>
+
+            
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+      <!-- row -->
+      <div class="row">
+        
+        
+
+        <div class="col-md-9" id="content-wrapper">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <h1>Source code for nidata.multimodal.my_connectome_2015</h1><div class="highlight"><pre>
+<span class="c"># *- encoding: utf-8 -*-</span>
+<span class="c"># Author: Alison Campbell, Ben Cipollini</span>
+<span class="c"># License: simplified BSD</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Docstring</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+
+<span class="kn">from</span> <span class="nn">...core.datasets</span> <span class="kn">import</span> <span class="n">HttpDataset</span>
+
+
+<div class="viewcode-block" id="MyConnectome2015Dataset"><a class="viewcode-back" href="../../../nidata.multimodal.my_connectome_2015.html#nidata.multimodal.my_connectome_2015.MyConnectome2015Dataset">[docs]</a><span class="k">class</span> <span class="nc">MyConnectome2015Dataset</span><span class="p">(</span><span class="n">HttpDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TODO: MyConnectome2015Dataset docsring</span>
+
+<span class="sd">    A data loader utility for downloading fMRI data from OpenfMRI.org</span>
+
+<span class="sd">    Adapted by: Alison Campbell</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MyConnectome2015Dataset.fetch"><a class="viewcode-back" href="../../../nidata.multimodal.my_connectome_2015.html#nidata.multimodal.my_connectome_2015.MyConnectome2015Dataset.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_types</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">session_ids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+              <span class="n">resume</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="c"># before the fetcher, construct URLS to download</span>
+            <span class="c"># Openfmri dataset ID ds000031</span>
+
+        <span class="k">if</span> <span class="n">data_types</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">data_types</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;functional&#39;</span><span class="p">,</span> <span class="s">&#39;retinotopy&#39;</span><span class="p">,</span> <span class="s">&#39;diffusion&#39;</span><span class="p">,</span>
+                          <span class="s">&#39;resting_state&#39;</span><span class="p">,</span> <span class="s">&#39;pilot&#39;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_types</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">session_ids</span> <span class="o">=</span> <span class="n">data_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;functional&#39;</span><span class="p">,</span> <span class="n">session_ids</span><span class="p">)</span>
+            <span class="n">data_types</span> <span class="o">=</span> <span class="n">data_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="n">all_session_ids</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">pilot</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span>
+            <span class="n">functional</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">104</span><span class="p">),</span>
+            <span class="n">resting_state</span><span class="o">=</span><span class="p">[</span><span class="mi">105</span><span class="p">],</span>
+            <span class="n">diffusion</span><span class="o">=</span><span class="p">[</span><span class="mi">106</span><span class="p">],</span>
+            <span class="n">retinotopy</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;retinotopy&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">session_ids</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">session_ids</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+                <span class="n">session_ids</span> <span class="o">+=</span> <span class="n">all_session_ids</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span>
+
+        <span class="c"># First, construct the relevant urls</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;uncompress&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+        <span class="n">base_url</span> <span class="o">=</span> <span class="s">&#39;https://s3.amazonaws.com/openfmri/tarballs/&#39;</span>
+
+        <span class="k">if</span> <span class="s">&#39;resting_state&#39;</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[(</span><span class="s">&#39;ds031/sub00001/ses105&#39;</span><span class="p">,</span>
+                       <span class="n">base_url</span> <span class="o">+</span> <span class="s">&#39;ds031_ses105.tgz&#39;</span><span class="p">,</span> <span class="n">opts</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="s">&#39;diffusion&#39;</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[(</span><span class="s">&#39;ds031/sub00001/ses106&#39;</span><span class="p">,</span>
+                       <span class="n">base_url</span> <span class="o">+</span> <span class="s">&#39;ds031_ses106.tgz&#39;</span><span class="p">,</span> <span class="n">opts</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="s">&#39;retinotopy&#39;</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">+=</span> <span class="p">[(</span><span class="s">&#39;ds031/sub00001/retinotopy&#39;</span><span class="p">,</span>
+                       <span class="n">base_url</span> <span class="o">+</span> <span class="s">&#39;ds031_retinotopy.tgz&#39;</span><span class="p">,</span> <span class="n">opts</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="s">&#39;functional&#39;</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="n">sess_to_file_map</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&#39;ds031_pilot_set.tgz&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
+                <span class="s">&#39;ds031_set01.tgz&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
+                <span class="s">&#39;ds031_set02.tgz&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">37</span><span class="p">),</span>
+                <span class="s">&#39;ds031_set03.tgz&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="mi">49</span><span class="p">),</span>
+                <span class="s">&#39;ds031_set04.tgz&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">61</span><span class="p">),</span>
+                <span class="s">&#39;ds031_set05.tgz&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">61</span><span class="p">,</span> <span class="mi">73</span><span class="p">),</span>
+                <span class="s">&#39;ds031_set06.tgz&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">73</span><span class="p">,</span> <span class="mi">85</span><span class="p">),</span>
+                <span class="s">&#39;ds031_set07.tgz&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">98</span><span class="p">),</span>
+                <span class="s">&#39;ds031_set08.tgz&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span> <span class="p">}</span>
+            <span class="k">for</span> <span class="n">zip_file</span><span class="p">,</span> <span class="n">sess_range</span> <span class="ow">in</span> <span class="n">sess_to_file_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">session_ids</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">sess_range</span><span class="p">)):</span>
+                    <span class="n">uncompressed_dir</span> <span class="o">=</span> <span class="s">&#39;ds031/sub00001/ses</span><span class="si">%03d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">sess_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">remote_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="n">zip_file</span>
+                    <span class="n">files</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">uncompressed_dir</span><span class="p">,</span> <span class="n">remote_url</span><span class="p">,</span> <span class="n">opts</span><span class="p">)]</span>
+
+        <span class="c"># Now, fetch the files.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="n">resume</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+                           <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">delete_archive</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+        <span class="c"># Group the data according to modality.</span>
+        <span class="n">out_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+        <span class="k">for</span> <span class="n">session_path</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="s">&#39;ds031&#39;</span><span class="p">,</span>
+                                              <span class="s">&#39;sub00001&#39;</span><span class="p">,</span> <span class="s">&#39;ses*&#39;</span><span class="p">)):</span>
+            <span class="n">session_dirname</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">session_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">session_dirname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">session_ids</span> <span class="ow">and</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">session_dirname</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">session_ids</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+                <span class="n">data_type_path</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">session_path</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_type_path</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="k">for</span> <span class="n">img_path</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_type_path</span><span class="p">,</span> <span class="s">&#39;*.nii.gz&#39;</span><span class="p">)):</span>
+                    <span class="n">out_dict</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span>
+
+        <span class="c"># return the data</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">out_dict</span><span class="p">))</span></div></div>
+</pre></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="col-md-3 hidden-xs" id="sidebar-wrapper">
+  <div class="sidebar hidden-xs" role="navigation" aria-label="main navigation">
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-inline" action="../../../search.html" method="get">
+      <div class="input-append input-group">
+        <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+        <span class="input-group-btn">
+        <input type="submit" class="btn" value="Go" />
+        </span>
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row footer-relbar">
+<div id="navbar-related" class=" related navbar navbar-inverse" role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav navbar-nav ">
+        <li><a href="../../../index.html">nidata  documentation</a></li>
+    </ul>
+<ul class="nav navbar-nav pull-right hidden-xs hidden-sm">
+      
+        <li><a href="../../../py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="../../../genindex.html" title="General Index" >index</a></li>
+        <li><a href="../../index.html" >Module code</a></li>
+        <li><a href="#">top</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2016, Frank Liao.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

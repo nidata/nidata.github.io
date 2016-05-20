@@ -1,0 +1,10 @@
+nidata.resting_state.ABIDE_pcp package
+======================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.resting_state.ABIDE_pcp
+    :members:
+    :undoc-members:
+    :show-inheritance:

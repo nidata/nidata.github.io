@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>6.1.1. nidata.multimodal.hcp package &mdash; nidata  documentation</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+
+<link rel="stylesheet" href="_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" id="current-theme" href="_static/css/bootstrap3/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" id="current-adjust-theme" type="text/css" />
+
+<link rel="stylesheet" href="_static/css/font-awesome.min.css">
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+</style>
+
+<link rel="stylesheet" href="_static/css/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    './',
+            VERSION:     '',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+    <script type="text/javascript" src="_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/bootstrap3.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="_static/js/basicstrap.js"></script>
+<script type="text/javascript">
+</script>
+    <link rel="top" title="nidata  documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div id="navbar-top" class="navbar navbar-fixed-top navbar-inverse" role="navigation" aria-label="top navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">nidata  documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown visible-xs">
+                <a role="button" id="localToc" data-toggle="dropdown" data-target="#" href="#">Table Of Contents <b class="caret"></b></a>
+                <ul class="dropdown-menu localtoc sp-localtoc" role="menu" aria-labelledby="localToc">
+                <ul>
+<li><a class="reference internal" href="#">6.1.1. nidata.multimodal.hcp package</a><ul>
+<li><a class="reference internal" href="#module-nidata.multimodal.hcp">6.1.1.1. Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+                </ul>
+              </li>
+
+            
+              <li><a href="py-modindex.html" title="Python Module Index" >modules </a></li>
+              <li><a href="genindex.html" title="General Index" accesskey="I">index </a></li>
+            
+            <li class="visible-xs"><a href="_sources/nidata.multimodal.hcp.txt" rel="nofollow">Show Source</a></li>
+
+            <li class="visible-xs">
+                <form class="search form-search form-inline navbar-form navbar-right sp-searchbox" action="search.html" method="get">
+                  <div class="input-append input-group">
+                    <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+                    <span class="input-group-btn">
+                    <input type="submit" class="btn" value="Go" />
+                    </span>
+                  </div>
+                  <input type="hidden" name="check_keywords" value="yes" />
+                  <input type="hidden" name="area" value="default" />
+                </form>
+            </li>
+
+            
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+      <!-- row -->
+      <div class="row">
+        
+        
+
+        <div class="col-md-9" id="content-wrapper">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <div class="section" id="nidata-multimodal-hcp-package">
+<h1>6.1.1. nidata.multimodal.hcp package<a class="headerlink" href="#nidata-multimodal-hcp-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-nidata.multimodal.hcp">
+<span id="module-contents"></span><h2>6.1.1.1. Module contents<a class="headerlink" href="#module-nidata.multimodal.hcp" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="nidata.multimodal.hcp.HcpDataset">
+<em class="property">class </em><code class="descclassname">nidata.multimodal.hcp.</code><code class="descname">HcpDataset</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="nidata.core.datasets.html#nidata.core.datasets.Dataset" title="nidata.core.datasets.Dataset"><code class="xref py py-class docutils literal"><span class="pre">nidata.core.datasets.Dataset</span></code></a></p>
+<p>TODO: HcpDataset docstring</p>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="nidata.multimodal.hcp.HcpDataset.fetch">
+<code class="descname">fetch</code><span class="sig-paren">(</span><em>n_subjects=1</em>, <em>data_types=None</em>, <em>tasks=None</em>, <em>atlases=None</em>, <em>mnis=None</em>, <em>force=False</em>, <em>check=True</em>, <em>verbose=1</em>, <em>properties=None</em>, <em>process=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpDataset.fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpDataset.fetch" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_subjects</strong> : int</p>
+<blockquote>
+<div><p>the number of subjects to fetch files from</p>
+</div></blockquote>
+<p><strong>data_types</strong> : list</p>
+<blockquote>
+<div><p>the type of data to fetch,
+can choose from anat, diff, func, or rest</p>
+</div></blockquote>
+<p><strong>tasks</strong> : list</p>
+<blockquote>
+<div><p>the type of activity for functional data,
+can choose from emotional, gambling, language, motor,
+relational, social, and workingmemory</p>
+</div></blockquote>
+<p><strong>atlases</strong> : list</p>
+<blockquote>
+<div><p>scope of surface data,
+can choose from native or fsaverage</p>
+</div></blockquote>
+<p><strong>mnis</strong> : list</p>
+<blockquote>
+<div><p>determines whether to use mninonlinear data or not,
+can choose from true or false</p>
+</div></blockquote>
+<p><strong>properties</strong> : list</p>
+<blockquote>
+<div><p>the chosen properties displayed in structural data files
+can choose from myelinmap, curvature, thickness</p>
+</div></blockquote>
+<p><strong>process</strong> : list</p>
+<blockquote class="last">
+<div><p>whether or not the data is processed or not
+can choose from True or False</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidata.multimodal.hcp.HcpDataset.get_anat_files">
+<code class="descname">get_anat_files</code><span class="sig-paren">(</span><em>process</em>, <em>subj_id</em>, <em>atlas</em>, <em>mni</em>, <em>property</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpDataset.get_anat_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpDataset.get_anat_files" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>atlas</strong> : String</p>
+<blockquote>
+<div><p>scope of surface data,
+can choose from native or fsaverage</p>
+</div></blockquote>
+<p><strong>mni</strong> : boolean</p>
+<blockquote>
+<div><p>determines whether to use mninonlinear data or not,
+can choose from true or false</p>
+</div></blockquote>
+<p><strong>property</strong> : String</p>
+<blockquote>
+<div><p>the chosen properties displayed in structural data files
+can choose from myelinmap, curvature, thickness</p>
+</div></blockquote>
+<p><strong>process</strong> : boolean</p>
+<blockquote>
+<div><p>whether or not the data is processed or not
+can choose from True or False</p>
+</div></blockquote>
+<p><strong>subj_id</strong> : String</p>
+<blockquote class="last">
+<div><p>the id of the subject the files are on</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidata.multimodal.hcp.HcpDataset.get_diff_files">
+<code class="descname">get_diff_files</code><span class="sig-paren">(</span><em>process</em>, <em>subj_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpDataset.get_diff_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpDataset.get_diff_files" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>process</strong> : boolean</p>
+<blockquote>
+<div><p>whether or not the data is processed or not
+can choose from True or False</p>
+</div></blockquote>
+<p><strong>subj_id</strong> : String</p>
+<blockquote class="last">
+<div><p>the id of the subject the files are on</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidata.multimodal.hcp.HcpDataset.get_rest_files">
+<code class="descname">get_rest_files</code><span class="sig-paren">(</span><em>process</em>, <em>subj_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpDataset.get_rest_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpDataset.get_rest_files" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>process</strong> : boolean</p>
+<blockquote>
+<div><p>whether or not the data is processed or not
+can choose from True or False</p>
+</div></blockquote>
+<p><strong>subj_id</strong> : String</p>
+<blockquote class="last">
+<div><p>the id of the subject the files are on</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidata.multimodal.hcp.HcpDataset.get_subject_list">
+<code class="descname">get_subject_list</code><span class="sig-paren">(</span><em>n_subjects=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpDataset.get_subject_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpDataset.get_subject_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of subject IDs. Depends on the # of subjects,
+which also corresponds to other things (license agreement,
+type of data available, etc)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidata.multimodal.hcp.HcpDataset.get_task_files">
+<code class="descname">get_task_files</code><span class="sig-paren">(</span><em>process</em>, <em>task</em>, <em>subj_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpDataset.get_task_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpDataset.get_task_files" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>task</strong> : String</p>
+<blockquote>
+<div><p>the type of activity for functional data,
+can choose from emotional, gambling, language, motor,
+relational, social, and workingmemory</p>
+</div></blockquote>
+<p><strong>process</strong> : boolean</p>
+<blockquote>
+<div><p>whether or not the data is processed or not
+can choose from True or False</p>
+</div></blockquote>
+<p><strong>subj_id</strong> : String</p>
+<blockquote class="last">
+<div><p>the id of the subject the files are on</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidata.multimodal.hcp.HcpDataset.prepend">
+<code class="descname">prepend</code><span class="sig-paren">(</span><em>src_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpDataset.prepend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpDataset.prepend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepends the proper absolute url to a list of files, based on fetcher type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>src_files: list of str</strong></p>
+<blockquote>
+<div><p>uncompleted urls without the prepended fetcher type</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of fully qualified urls</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nidata.multimodal.hcp.HcpHttpFetcher">
+<em class="property">class </em><code class="descclassname">nidata.multimodal.hcp.</code><code class="descname">HcpHttpFetcher</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpHttpFetcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpHttpFetcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="nidata.core.fetchers.html#nidata.core.fetchers.http_fetcher.HttpFetcher" title="nidata.core.fetchers.http_fetcher.HttpFetcher"><code class="xref py py-class docutils literal"><span class="pre">nidata.core.fetchers.http_fetcher.HttpFetcher</span></code></a></p>
+<p>TODO: HcpHttpFetcher docstring</p>
+<p class="rubric">Methods</p>
+<dl class="attribute">
+<dt id="nidata.multimodal.hcp.HcpHttpFetcher.dependencies">
+<code class="descname">dependencies</code><em class="property"> = ['requests']</em><a class="headerlink" href="#nidata.multimodal.hcp.HcpHttpFetcher.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nidata.multimodal.hcp.HcpHttpFetcher.fetch">
+<code class="descname">fetch</code><span class="sig-paren">(</span><em>files</em>, <em>force=False</em>, <em>resume=True</em>, <em>check=False</em>, <em>verbose=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nidata/multimodal/hcp.html#HcpHttpFetcher.fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nidata.multimodal.hcp.HcpHttpFetcher.fetch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="col-md-3 hidden-xs" id="sidebar-wrapper">
+  <div class="sidebar hidden-xs" role="navigation" aria-label="main navigation">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.1.1. nidata.multimodal.hcp package</a><ul>
+<li><a class="reference internal" href="#module-nidata.multimodal.hcp">6.1.1.1. Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/nidata.multimodal.hcp.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-inline" action="search.html" method="get">
+      <div class="input-append input-group">
+        <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+        <span class="input-group-btn">
+        <input type="submit" class="btn" value="Go" />
+        </span>
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row footer-relbar">
+<div id="navbar-related" class=" related navbar navbar-inverse" role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav navbar-nav ">
+        <li><a href="index.html">nidata  documentation</a></li>
+    </ul>
+<ul class="nav navbar-nav pull-right hidden-xs hidden-sm">
+      
+        <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="genindex.html" title="General Index" >index</a></li>
+        <li><a href="#">top</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2016, Frank Liao.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

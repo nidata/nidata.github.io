@@ -1,0 +1,10 @@
+nidata.anatomical.PING package
+==============================
+
+Module contents
+---------------
+
+.. automodule:: nidata.anatomical.PING
+    :members:
+    :undoc-members:
+    :show-inheritance:

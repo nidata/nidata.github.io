@@ -1,0 +1,10 @@
+nidata.resting_state.adhd package
+=================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.resting_state.adhd
+    :members:
+    :undoc-members:
+    :show-inheritance:

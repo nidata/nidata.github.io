@@ -1,0 +1,10 @@
+nidata.atlas.power_2011 package
+===============================
+
+Module contents
+---------------
+
+.. automodule:: nidata.atlas.power_2011
+    :members:
+    :undoc-members:
+    :show-inheritance:

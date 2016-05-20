@@ -1,0 +1,7 @@
+NiData
+======
+
+.. toctree::
+   :maxdepth: 4
+
+   nidata

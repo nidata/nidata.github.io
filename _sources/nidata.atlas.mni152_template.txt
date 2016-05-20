@@ -1,0 +1,10 @@
+nidata.atlas.mni152_template package
+====================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.atlas.mni152_template
+    :members:
+    :undoc-members:
+    :show-inheritance:

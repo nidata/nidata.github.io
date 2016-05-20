@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>nidata.core.datasets &mdash; nidata  documentation</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" id="current-theme" href="../../../_static/css/bootstrap3/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" id="current-adjust-theme" type="text/css" />
+
+<link rel="stylesheet" href="../../../_static/css/font-awesome.min.css">
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+</style>
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    '../../../',
+            VERSION:     '',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+    <script type="text/javascript" src="../../../_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/bootstrap3.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/basicstrap.js"></script>
+<script type="text/javascript">
+</script>
+    <link rel="top" title="nidata  documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div id="navbar-top" class="navbar navbar-fixed-top navbar-inverse" role="navigation" aria-label="top navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../../index.html">nidata  documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+            
+              <li><a href="../../../py-modindex.html" title="Python Module Index" >modules </a></li>
+              <li><a href="../../../genindex.html" title="General Index" accesskey="I">index </a></li>
+              <li><a href="../../index.html" accesskey="U">Module code</a></li>
+            
+
+            <li class="visible-xs">
+                <form class="search form-search form-inline navbar-form navbar-right sp-searchbox" action="../../../search.html" method="get">
+                  <div class="input-append input-group">
+                    <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+                    <span class="input-group-btn">
+                    <input type="submit" class="btn" value="Go" />
+                    </span>
+                  </div>
+                  <input type="hidden" name="check_keywords" value="yes" />
+                  <input type="hidden" name="area" value="default" />
+                </form>
+            </li>
+
+            
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+      <!-- row -->
+      <div class="row">
+        
+        
+
+        <div class="col-md-9" id="content-wrapper">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <h1>Source code for nidata.core.datasets</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
+
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">with_metaclass</span>
+
+<span class="kn">from</span> <span class="nn">..objdep</span> <span class="kn">import</span> <span class="n">ClassWithDependencies</span><span class="p">,</span> <span class="n">DependenciesMeta</span>
+
+
+<div class="viewcode-block" id="readlinkabs"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.readlinkabs">[docs]</a><span class="k">def</span> <span class="nf">readlinkabs</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return an absolute path for the destination</span>
+<span class="sd">    of a symlink</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">path</span>
+    <span class="k">return</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">link</span><span class="p">),</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_dataset_dir"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.get_dataset_dir">[docs]</a><span class="k">def</span> <span class="nf">get_dataset_dir</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">env_vars</span><span class="o">=</span><span class="p">[],</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create if necessary and returns data directory of given dataset.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_name: string</span>
+<span class="sd">        The unique name of the dataset.</span>
+
+<span class="sd">    data_dir: string, optional</span>
+<span class="sd">        Path of the data directory. Used to force data storage in a specified</span>
+<span class="sd">        location. Default: None</span>
+
+<span class="sd">    env_vars: list of string, optional</span>
+<span class="sd">        Add environment variables searched even if data_dir is not None.</span>
+
+<span class="sd">    verbose: int, optional</span>
+<span class="sd">        verbosity level (0 means no message).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data_dir: string</span>
+<span class="sd">        Path of the given dataset directory.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function retrieves the datasets directory (or data directory) using</span>
+<span class="sd">    the following priority :</span>
+<span class="sd">    1. the keyword argument data_dir</span>
+<span class="sd">    2. the global environment variable NILEARN_SHARED_DATA</span>
+<span class="sd">    3. the user environment variable NIDATA_PATH</span>
+<span class="sd">    4. NIDATA_PATH in the user home folder</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># We build an array of successive paths by priority</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c"># Search given environment variables</span>
+    <span class="k">for</span> <span class="n">env_var</span> <span class="ow">in</span> <span class="n">env_vars</span><span class="p">:</span>
+        <span class="n">env_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">env_var</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">paths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">env_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">))</span>
+
+    <span class="c"># Check data_dir which force storage in a specific location</span>
+    <span class="k">if</span> <span class="n">data_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="n">data_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">global_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s">&#39;NIDATA_SHARED_DATA&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">global_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">paths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">global_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">))</span>
+
+        <span class="n">local_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s">&#39;NIDATA_PATH&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">local_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">paths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">local_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">))</span>
+
+        <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/nidata_path&#39;</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset search paths: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">paths</span><span class="p">)</span>
+
+    <span class="c"># Check if the dataset exists somewhere</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="c"># Resolve path</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">readlinkabs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">Dataset found in </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">path</span>
+
+    <span class="c"># If not, create a folder in the first writeable directory</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">Dataset created in </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">path</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">short_error_message</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="s">&#39;strerror&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s"> -{0} ({1})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">path</span><span class="p">,</span> <span class="n">short_error_message</span><span class="p">))</span>
+
+    <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s">&#39;Nilearn tried to store the dataset in the following &#39;</span>
+                  <span class="s">&#39;directories, but:&#39;</span> <span class="o">+</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Dataset"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.Dataset">[docs]</a><span class="k">class</span> <span class="nc">Dataset</span><span class="p">(</span><span class="n">ClassWithDependencies</span><span class="p">):</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Dataset.get_dataset_descr_path"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.Dataset.get_dataset_descr_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_dataset_descr_path</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">class_path</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">cls</span><span class="p">))</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">class_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">class_path</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;.rst&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Dataset.get_dataset_descr"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.Dataset.get_dataset_descr">[docs]</a>    <span class="k">def</span> <span class="nf">get_dataset_descr</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">rst_path</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">get_dataset_descr_path</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">rst_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&#39;</span></div>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="n">class_path</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">class_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modality</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">class_path</span><span class="p">))</span>  <span class="c"># assume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset_descr</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">get_dataset_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="n">data_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;fetcher&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>  <span class="c"># set to *something*.</span>
+
+        <span class="c"># Feeling lazy... handle this here, for now.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__doc__</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span>
+
+<div class="viewcode-block" id="Dataset.clean_data_directory"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.Dataset.clean_data_directory">[docs]</a>    <span class="k">def</span> <span class="nf">clean_data_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Function that guarantees a data directory.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Dataset.fetch"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.Dataset.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clean_data_directory</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="FetcherFunctionMeta"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.FetcherFunctionMeta">[docs]</a><span class="k">class</span> <span class="nc">FetcherFunctionMeta</span><span class="p">(</span><span class="n">DependenciesMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Define fetcher_function; it will reset class docstring.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_init__wrapper</span><span class="p">(</span><span class="n">init_fn</span><span class="p">):</span>
+            <span class="c"># TODO: Docstring</span>
+            <span class="k">def</span> <span class="nf">wrapper_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">rv</span> <span class="o">=</span> <span class="n">init_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c"># install</span>
+                <span class="n">mod_path</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fetcher_function</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">func_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetcher_function</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">mod_path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">func_name</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Module does not contain requested &quot;</span>
+                                         <span class="s">&quot;function </span><span class="si">%s</span><span class="s">; only contains </span><span class="si">%s</span><span class="s">. &quot;</span>
+                                         <span class="s">&quot;Downloaded from </span><span class="si">%s</span><span class="s"> into to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">fetcher_function</span><span class="p">,</span> <span class="nb">dir</span><span class="p">(</span><span class="n">mod</span><span class="p">),</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">__file__</span><span class="p">))</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">func_name</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
+                <span class="k">return</span> <span class="n">rv</span>
+            <span class="k">return</span> <span class="n">wrapper_fn</span>
+
+        <span class="n">new_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FetcherFunctionMeta</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span> \
+            <span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="n">parents</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">new_cls</span><span class="p">,</span> <span class="s">&#39;fetcher_function&#39;</span><span class="p">):</span>
+            <span class="c"># Need to find the fetcher function</span>
+            <span class="n">mod_path</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_cls</span><span class="o">.</span><span class="n">fetcher_function</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">func_name</span> <span class="o">=</span> <span class="n">new_cls</span><span class="o">.</span><span class="n">fetcher_function</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">mod_path</span><span class="p">)</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">func_name</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="c"># Module not installed; paste it on lazily</span>
+                <span class="n">new_cls</span><span class="o">.</span><span class="n">__init__</span> <span class="o">=</span> <span class="n">_init__wrapper</span><span class="p">(</span><span class="n">new_cls</span><span class="o">.</span><span class="n">__init__</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># Module installed; we can paste it on now.</span>
+                <span class="n">new_cls</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
+
+        <span class="k">return</span> <span class="n">new_cls</span></div>
+
+
+<div class="viewcode-block" id="FetcherFunctionDataset"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.FetcherFunctionDataset">[docs]</a><span class="k">class</span> <span class="nc">FetcherFunctionDataset</span><span class="p">(</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">FetcherFunctionMeta</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">)):</span>
+<div class="viewcode-block" id="FetcherFunctionDataset.fetch"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.FetcherFunctionDataset.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="NilearnDataset"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.NilearnDataset">[docs]</a><span class="k">class</span> <span class="nc">NilearnDataset</span><span class="p">(</span><span class="n">FetcherFunctionDataset</span><span class="p">):</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">([</span><span class="s">&#39;numpy&#39;</span><span class="p">,</span> <span class="s">&#39;scipy&#39;</span><span class="p">,</span> <span class="s">&#39;sklearn&#39;</span><span class="p">,</span> <span class="s">&#39;nilearn&#39;</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="n">FetcherFunctionDataset</span><span class="o">.</span><span class="n">dependencies</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="NilearnDataset.get_dataset_descr_path"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.NilearnDataset.get_dataset_descr_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_dataset_descr_path</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="c"># Grab it from nilearn.</span>
+        <span class="kn">import</span> <span class="nn">nilearn.datasets.description</span> <span class="kn">as</span> <span class="nn">descr</span>
+        <span class="n">class_path</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">cls</span><span class="p">))</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;nilearn_name&#39;</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">class_path</span><span class="p">))</span>
+        <span class="n">descr_path</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">descr</span><span class="o">.</span><span class="n">__file__</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">rst_path</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">descr_path</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.rst&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="c"># ...or locally.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">rst_path</span><span class="p">):</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">rst_path</span> <span class="o">=</span> <span class="n">FetcherFunctionDataset</span><span class="o">.</span><span class="n">get_dataset_descr_path</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">rst_path</span></div></div>
+
+
+<div class="viewcode-block" id="NistatsDataset"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.NistatsDataset">[docs]</a><span class="k">class</span> <span class="nc">NistatsDataset</span><span class="p">(</span><span class="n">FetcherFunctionDataset</span><span class="p">):</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;nistats&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">FetcherFunctionDataset</span><span class="o">.</span><span class="n">dependencies</span></div>
+
+
+<div class="viewcode-block" id="HttpDataset"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.HttpDataset">[docs]</a><span class="k">class</span> <span class="nc">HttpDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..fetchers</span> <span class="kn">import</span> <span class="n">HttpFetcher</span>  <span class="c"># avoid circular import</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HttpDataset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">data_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span> <span class="o">=</span> <span class="n">HttpFetcher</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AuthenticatedHttpDataset"><a class="viewcode-back" href="../../../nidata.core.datasets.html#nidata.core.datasets.AuthenticatedHttpDataset">[docs]</a><span class="k">class</span> <span class="nc">AuthenticatedHttpDataset</span><span class="p">(</span><span class="n">HttpDataset</span><span class="p">):</span>
+    <span class="n">USERNAME_ENV_VAR</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">PASSWD_ENV_VAR</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..fetchers</span> <span class="kn">import</span> <span class="n">HttpFetcher</span>  <span class="c"># avoid circular import</span>
+
+        <span class="n">username</span> <span class="o">=</span> <span class="n">username</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">USERNAME_ENV_VAR</span><span class="p">)</span>
+        <span class="n">passwd</span> <span class="o">=</span> <span class="n">passwd</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PASSWD_ENV_VAR</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">passwd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;username/passwd must be passed in, or </span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s"> &quot;</span>
+                             <span class="s">&quot;environment variables must be set.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">USERNAME_ENV_VAR</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PASSWD_ENV_VAR</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">passwd</span> <span class="o">=</span> <span class="n">passwd</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">AuthenticatedHttpDataset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">data_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span> <span class="o">=</span> <span class="n">HttpFetcher</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span>
+                                   <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                                   <span class="n">passwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">passwd</span><span class="p">)</span></div>
+</pre></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="col-md-3 hidden-xs" id="sidebar-wrapper">
+  <div class="sidebar hidden-xs" role="navigation" aria-label="main navigation">
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-inline" action="../../../search.html" method="get">
+      <div class="input-append input-group">
+        <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+        <span class="input-group-btn">
+        <input type="submit" class="btn" value="Go" />
+        </span>
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row footer-relbar">
+<div id="navbar-related" class=" related navbar navbar-inverse" role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav navbar-nav ">
+        <li><a href="../../../index.html">nidata  documentation</a></li>
+    </ul>
+<ul class="nav navbar-nav pull-right hidden-xs hidden-sm">
+      
+        <li><a href="../../../py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="../../../genindex.html" title="General Index" >index</a></li>
+        <li><a href="../../index.html" >Module code</a></li>
+        <li><a href="#">top</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2016, Frank Liao.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

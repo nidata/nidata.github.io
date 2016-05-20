@@ -1,0 +1,10 @@
+nidata.task.neurovault package
+==============================
+
+Module contents
+---------------
+
+.. automodule:: nidata.task.neurovault
+    :members:
+    :undoc-members:
+    :show-inheritance:

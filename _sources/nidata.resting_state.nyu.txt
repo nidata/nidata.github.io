@@ -1,0 +1,10 @@
+nidata.resting_state.nyu package
+================================
+
+Module contents
+---------------
+
+.. automodule:: nidata.resting_state.nyu
+    :members:
+    :undoc-members:
+    :show-inheritance:

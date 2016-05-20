@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>nidata.task.poldrack_etal_2001 &mdash; nidata  documentation</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" id="current-theme" href="../../../_static/css/bootstrap3/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" id="current-adjust-theme" type="text/css" />
+
+<link rel="stylesheet" href="../../../_static/css/font-awesome.min.css">
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+</style>
+
+<link rel="stylesheet" href="../../../_static/css/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    '../../../',
+            VERSION:     '',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+    <script type="text/javascript" src="../../../_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/bootstrap3.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/basicstrap.js"></script>
+<script type="text/javascript">
+</script>
+    <link rel="top" title="nidata  documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div id="navbar-top" class="navbar navbar-fixed-top navbar-inverse" role="navigation" aria-label="top navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../../index.html">nidata  documentation</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+            
+              <li><a href="../../../py-modindex.html" title="Python Module Index" >modules </a></li>
+              <li><a href="../../../genindex.html" title="General Index" accesskey="I">index </a></li>
+              <li><a href="../../index.html" accesskey="U">Module code</a></li>
+            
+
+            <li class="visible-xs">
+                <form class="search form-search form-inline navbar-form navbar-right sp-searchbox" action="../../../search.html" method="get">
+                  <div class="input-append input-group">
+                    <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+                    <span class="input-group-btn">
+                    <input type="submit" class="btn" value="Go" />
+                    </span>
+                  </div>
+                  <input type="hidden" name="check_keywords" value="yes" />
+                  <input type="hidden" name="area" value="default" />
+                </form>
+            </li>
+
+            
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+      <!-- row -->
+      <div class="row">
+        
+        
+
+        <div class="col-md-9" id="content-wrapper">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <h1>Source code for nidata.task.poldrack_etal_2001</h1><div class="highlight"><pre>
+<span class="c"># *- encoding: utf-8 -*-</span>
+<span class="c"># Author: Ofer Groweiss</span>
+<span class="c"># License: simplified BSD</span>
+
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">...core.datasets</span> <span class="kn">import</span> <span class="n">HttpDataset</span>
+
+
+<div class="viewcode-block" id="OpenFMriDataset"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.OpenFMriDataset">[docs]</a><span class="k">class</span> <span class="nc">OpenFMriDataset</span><span class="p">(</span><span class="n">HttpDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TODO: OpenFMriDataset docstring.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">([</span><span class="s">&#39;numpy&#39;</span><span class="p">,</span> <span class="s">&#39;scipy&#39;</span><span class="p">,</span> <span class="s">&#39;sklearn&#39;</span><span class="p">,</span> <span class="s">&#39;pandas&#39;</span><span class="p">,</span> <span class="s">&#39;nibabel&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;nipy&#39;</span><span class="p">,</span> <span class="s">&#39;nilearn&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">HttpDataset</span><span class="o">.</span><span class="n">dependencies</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="OpenFMriDataset.get_subj_from_path"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.OpenFMriDataset.get_subj_from_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_subj_from_path</span><span class="p">(</span><span class="n">pth</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TODO: get_subj_from_path docstring.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">&#39;.*(sub-[0-9]+).*&#39;</span><span class="p">,</span> <span class="n">pth</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="OpenFMriDataset.get_task_from_path"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.OpenFMriDataset.get_task_from_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_task_from_path</span><span class="p">(</span><span class="n">pth</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TODO: get_task_from_path docstring.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">&#39;.*sub-[0-9]+_task-([^_]+)_&#39;</span><span class="p">,</span> <span class="n">pth</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="OpenFMriDataset.get_run_from_path"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.OpenFMriDataset.get_run_from_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_run_from_path</span><span class="p">(</span><span class="n">pth</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TODO: get_run_from_path docstring.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">&#39;.*_(run[0-9]+)&#39;</span><span class="p">,</span> <span class="n">pth</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OpenFMriDataset.preprocess_files"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.OpenFMriDataset.preprocess_files">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_files</span><span class="p">,</span> <span class="n">anat_files</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TODO: preprocess_files docstring.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+        <span class="kn">import</span> <span class="nn">nibabel</span>
+        <span class="kn">import</span> <span class="nn">nipy.modalities.fmri.design_matrix</span> <span class="kn">as</span> <span class="nn">dm</span>
+        <span class="kn">from</span> <span class="nn">nilearn.image</span> <span class="kn">import</span> <span class="n">index_img</span>
+        <span class="kn">from</span> <span class="nn">nilearn.masking</span> <span class="kn">import</span> <span class="n">compute_epi_mask</span>
+        <span class="kn">from</span> <span class="nn">nipy.modalities.fmri.glm</span> <span class="kn">import</span> <span class="n">FMRILinearModel</span>
+        <span class="kn">from</span> <span class="nn">nipy.modalities.fmri.experimental_paradigm</span> <span class="kn">import</span> <span class="p">(</span>
+            <span class="n">EventRelatedParadigm</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_beta_filepath</span><span class="p">(</span><span class="n">func_file</span><span class="p">,</span> <span class="n">cond</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">func_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;_bold.nii.gz&#39;</span><span class="p">,</span> <span class="s">&#39;_beta-</span><span class="si">%s</span><span class="s">.nii.gz&#39;</span> <span class="o">%</span> <span class="n">cond</span><span class="p">)</span>
+
+        <span class="n">beta_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fi</span><span class="p">,</span> <span class="n">func_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">func_files</span><span class="p">):</span>
+            <span class="c"># Don&#39;t re-do preprocessing.</span>
+            <span class="c"># beta_mask = func_file.replace(&#39;_bold.nii.gz&#39;, &#39;_beta*.nii.gz&#39;)</span>
+            <span class="n">cond_file</span> <span class="o">=</span> <span class="n">func_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;_bold.nii.gz&#39;</span><span class="p">,</span> <span class="s">&#39;_events.tsv&#39;</span><span class="p">)</span>
+            <span class="n">cond_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">cond_file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+
+            <span class="c"># Get condition info, to search if betas have been done.</span>
+            <span class="n">conditions</span> <span class="o">=</span> <span class="n">cond_data</span><span class="p">[</span><span class="s">&#39;trial_type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">all_conds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">conditions</span><span class="p">)</span>
+            <span class="n">all_beta_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_beta_filepath</span><span class="p">(</span><span class="n">func_file</span><span class="p">,</span> <span class="n">cond</span><span class="p">)</span>
+                              <span class="k">for</span> <span class="n">cond</span> <span class="ow">in</span> <span class="n">all_conds</span><span class="p">]</span>
+            <span class="c"># All betas are done.</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_beta_files</span><span class="p">]):</span>
+                <span class="n">beta_files</span> <span class="o">+=</span> <span class="n">all_beta_files</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;Preprocessing file </span><span class="si">%d</span><span class="s"> of </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">fi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">func_files</span><span class="p">)))</span>
+
+            <span class="c"># Need to do regression.</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">cond_data</span><span class="p">[</span><span class="s">&#39;duration&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">onsets</span> <span class="o">=</span> <span class="n">cond_data</span><span class="p">[</span><span class="s">&#39;onset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+            <span class="n">img</span> <span class="o">=</span> <span class="n">nibabel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">func_file</span><span class="p">)</span>
+            <span class="n">n_scans</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">frametimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">n_scans</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tr</span><span class="p">,</span> <span class="n">n_scans</span><span class="p">)</span>
+
+            <span class="c"># Create the design matrix</span>
+            <span class="n">paradigm</span> <span class="o">=</span> <span class="n">EventRelatedParadigm</span><span class="p">(</span><span class="n">conditions</span><span class="p">,</span> <span class="n">onsets</span><span class="p">)</span>
+            <span class="n">design_mat</span> <span class="o">=</span> <span class="n">dm</span><span class="o">.</span><span class="n">make_dmtx</span><span class="p">(</span><span class="n">frametimes</span><span class="p">,</span> <span class="n">paradigm</span><span class="p">,</span>
+                                      <span class="n">drift_model</span><span class="o">=</span><span class="s">&#39;cosine&#39;</span><span class="p">,</span>
+                                      <span class="n">hfcut</span><span class="o">=</span><span class="n">n_scans</span><span class="p">,</span> <span class="n">hrf_model</span><span class="o">=</span><span class="s">&#39;canonical&#39;</span><span class="p">)</span>
+
+            <span class="c"># Do the GLM</span>
+            <span class="n">mask_img</span> <span class="o">=</span> <span class="n">compute_epi_mask</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="n">fmri_glm</span> <span class="o">=</span> <span class="n">FMRILinearModel</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">design_mat</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask_img</span><span class="p">)</span>
+            <span class="n">fmri_glm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">do_scaling</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s">&#39;ar1&#39;</span><span class="p">)</span>
+
+            <span class="c"># Pull out the betas</span>
+            <span class="n">beta_hat</span> <span class="o">=</span> <span class="n">fmri_glm</span><span class="o">.</span><span class="n">glms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_beta</span><span class="p">()</span>  <span class="c"># Least-squares estimates</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">fmri_glm</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+            <span class="c"># output beta images</span>
+            <span class="n">dim</span> <span class="o">=</span> <span class="n">design_mat</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">beta_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">dim</span><span class="p">)</span>
+            <span class="n">beta_map</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta_hat</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">beta_image</span> <span class="o">=</span> <span class="n">nibabel</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">beta_map</span><span class="p">,</span> <span class="n">fmri_glm</span><span class="o">.</span><span class="n">affine</span><span class="p">)</span>
+            <span class="n">beta_image</span><span class="o">.</span><span class="n">get_header</span><span class="p">()[</span><span class="s">&#39;descrip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Parameter estimates of &quot;</span>
+                                                  <span class="s">&quot;the localizer dataset&quot;</span><span class="p">)</span>
+
+            <span class="c"># Save beta images</span>
+            <span class="k">for</span> <span class="n">ci</span><span class="p">,</span> <span class="n">cond</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">conditions</span><span class="p">)):</span>
+                <span class="n">beta_cond_img</span> <span class="o">=</span> <span class="n">index_img</span><span class="p">(</span><span class="n">beta_image</span><span class="p">,</span> <span class="n">ci</span><span class="p">)</span>
+                <span class="n">beta_filepath</span> <span class="o">=</span> <span class="n">get_beta_filepath</span><span class="p">(</span><span class="n">func_file</span><span class="p">,</span> <span class="n">cond</span><span class="p">)</span>
+                <span class="n">nibabel</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">beta_cond_img</span><span class="p">,</span> <span class="n">beta_filepath</span><span class="p">)</span>
+                <span class="n">beta_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">beta_filepath</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">beta_files</span></div></div>
+
+
+<div class="viewcode-block" id="PoldrackEtal2001Dataset"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.PoldrackEtal2001Dataset">[docs]</a><span class="k">class</span> <span class="nc">PoldrackEtal2001Dataset</span><span class="p">(</span><span class="n">OpenFMriDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TODO: PoldrackEtal2001Dataset docstring.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+        <span class="p">[(</span><span class="n">mod</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span> <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">OpenFMriDataset</span><span class="o">.</span><span class="n">dependencies</span><span class="p">],</span>
+        <span class="n">sphinx</span><span class="o">=</span><span class="s">&#39;sphinx&#39;</span><span class="p">,</span>
+        <span class="n">openfmri2bids</span><span class="o">=</span><span class="s">&#39;git+https://github.com/INCF/openfmri2bids.git&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PoldrackEtal2001Dataset.fetch"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.PoldrackEtal2001Dataset.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_subjects</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preprocess_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">convert</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+              <span class="n">url</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">openfmri2bids.converter</span> <span class="kn">import</span> <span class="n">convert</span>
+
+        <span class="c"># Prep the URLs</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="s">&#39;ds052_BIDS&#39;</span><span class="p">)):</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://openfmri.s3.amazonaws.com/tarballs/ds052_raw.tgz&#39;</span>
+            <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;uncompress&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;ds052&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">opts</span><span class="p">)]</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="n">resume</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+                                       <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+            <span class="c"># Move around the files to BIDS format.</span>
+            <span class="k">if</span> <span class="n">convert</span><span class="p">:</span>
+                <span class="n">convert</span><span class="p">(</span><span class="n">source_dir</span><span class="o">=</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="s">&#39;ds052&#39;</span><span class="p">),</span>
+                        <span class="n">dest_dir</span><span class="o">=</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="s">&#39;ds052_BIDS&#39;</span><span class="p">),</span>
+                        <span class="n">nii_handling</span><span class="o">=</span><span class="s">&#39;link&#39;</span><span class="p">)</span>
+
+        <span class="c"># Loop over subjects to extract files.</span>
+        <span class="n">anat_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">func_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">subj_dir</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span>
+                                          <span class="s">&#39;ds052_BIDS&#39;</span><span class="p">,</span> <span class="s">&#39;sub-*&#39;</span><span class="p">)):</span>
+            <span class="n">anat_files</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subj_dir</span><span class="p">,</span>
+                                            <span class="s">&#39;anatomy&#39;</span><span class="p">,</span> <span class="s">&#39;*_T1w_run*.nii.gz&#39;</span><span class="p">))</span>
+            <span class="n">func_files</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subj_dir</span><span class="p">,</span> <span class="s">&#39;functional&#39;</span><span class="p">,</span>
+                                            <span class="s">&#39;*_task-*_bold*.nii.gz&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">preprocess_data</span><span class="p">:</span>
+            <span class="n">func_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess_files</span><span class="p">(</span><span class="n">func_files</span><span class="p">,</span>
+                                               <span class="n">anat_files</span><span class="o">=</span><span class="n">anat_files</span><span class="p">)</span>
+
+        <span class="c"># return the data</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">func_files</span><span class="p">,</span> <span class="n">anat</span><span class="o">=</span><span class="n">anat_files</span><span class="p">)</span></div></div>
+</pre></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="col-md-3 hidden-xs" id="sidebar-wrapper">
+  <div class="sidebar hidden-xs" role="navigation" aria-label="main navigation">
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-inline" action="../../../search.html" method="get">
+      <div class="input-append input-group">
+        <input type="text" class="search-query form-control" name="q" placeholder="Search...">
+        <span class="input-group-btn">
+        <input type="submit" class="btn" value="Go" />
+        </span>
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row footer-relbar">
+<div id="navbar-related" class=" related navbar navbar-inverse" role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav navbar-nav ">
+        <li><a href="../../../index.html">nidata  documentation</a></li>
+    </ul>
+<ul class="nav navbar-nav pull-right hidden-xs hidden-sm">
+      
+        <li><a href="../../../py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="../../../genindex.html" title="General Index" >index</a></li>
+        <li><a href="../../index.html" >Module code</a></li>
+        <li><a href="#">top</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2016, Frank Liao.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>
