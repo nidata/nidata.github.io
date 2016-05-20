@@ -143,9 +143,9 @@
             <span class="k">print</span><span class="p">(</span><span class="s">&#39;Failed to import </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">ie</span><span class="p">))</span>
             <span class="k">return</span> <span class="bp">False</span>
 
-    <span class="k">return</span> <span class="bp">True</span></div>
+    <span class="k">return</span> <span class="bp">True</span>
 
-
+</div>
 <div class="viewcode-block" id="get_missing_dependencies"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.get_missing_dependencies">[docs]</a><span class="k">def</span> <span class="nf">get_missing_dependencies</span><span class="p">(</span><span class="n">dependencies</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TODO: get_missing_dependencies docstring</span>
@@ -157,9 +157,9 @@
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c"># as ie:</span>
             <span class="c"># print(&#39;Import error: %s&#39; % str(ie))</span>
             <span class="n">missing_dependencies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dep</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">missing_dependencies</span></div>
+    <span class="k">return</span> <span class="n">missing_dependencies</span>
 
-
+</div>
 <div class="viewcode-block" id="DependenciesMeta"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.DependenciesMeta">[docs]</a><span class="k">class</span> <span class="nc">DependenciesMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TODO: DependenciesMeta docstring.</span>
@@ -177,9 +177,9 @@
         <span class="n">new_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DependenciesMeta</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span> \
             <span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
         <span class="n">new_cls</span><span class="o">.</span><span class="n">__init__</span> <span class="o">=</span> <span class="n">_init__wrapper</span><span class="p">(</span><span class="n">new_cls</span><span class="o">.</span><span class="n">__init__</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">new_cls</span></div>
+        <span class="k">return</span> <span class="n">new_cls</span>
 
-
+</div>
 <div class="viewcode-block" id="ClassWithDependencies"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.ClassWithDependencies">[docs]</a><span class="k">class</span> <span class="nc">ClassWithDependencies</span><span class="p">(</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">DependenciesMeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="ClassWithDependencies.get_missing_dependencies"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.ClassWithDependencies.get_missing_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">get_missing_dependencies</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
@@ -187,8 +187,8 @@
 <span class="sd">        TODO: get_missing_dependencies docstring</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">get_missing_dependencies</span><span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;dependencies&#39;</span><span class="p">,</span> <span class="p">()))</span></div>
-
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;dependencies&#39;</span><span class="p">,</span> <span class="p">()))</span>
+</div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="ClassWithDependencies.install_missing_dependencies"><a class="viewcode-back" href="../../../nidata.core.html#nidata.core.objdep.ClassWithDependencies.install_missing_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">install_missing_dependencies</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -266,7 +266,7 @@
 
       <!-- footer -->
       <footer role="contentinfo">
-          &copy; Copyright 2016, Frank Liao.
+          &copy; Copyright 2016, nidata developers.
         Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
       </footer>
       <!-- /footer -->

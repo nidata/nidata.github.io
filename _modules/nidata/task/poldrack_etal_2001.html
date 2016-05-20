@@ -137,8 +137,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
-
+            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</div>
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="OpenFMriDataset.get_task_from_path"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.OpenFMriDataset.get_task_from_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_task_from_path</span><span class="p">(</span><span class="n">pth</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -148,8 +148,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
-
+            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</div>
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="OpenFMriDataset.get_run_from_path"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.OpenFMriDataset.get_run_from_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_run_from_path</span><span class="p">(</span><span class="n">pth</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -160,8 +160,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
-
+            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</div>
 <div class="viewcode-block" id="OpenFMriDataset.preprocess_files"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.OpenFMriDataset.preprocess_files">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_files</span><span class="p">,</span> <span class="n">anat_files</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        TODO: preprocess_files docstring.</span>
@@ -237,9 +237,9 @@
                 <span class="n">nibabel</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">beta_cond_img</span><span class="p">,</span> <span class="n">beta_filepath</span><span class="p">)</span>
                 <span class="n">beta_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">beta_filepath</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">beta_files</span></div></div>
+        <span class="k">return</span> <span class="n">beta_files</span>
 
-
+</div></div>
 <div class="viewcode-block" id="PoldrackEtal2001Dataset"><a class="viewcode-back" href="../../../nidata.task.poldrack_etal_2001.html#nidata.task.PoldrackEtal2001Dataset">[docs]</a><span class="k">class</span> <span class="nc">PoldrackEtal2001Dataset</span><span class="p">(</span><span class="n">OpenFMriDataset</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TODO: PoldrackEtal2001Dataset docstring.</span>
@@ -335,7 +335,7 @@
 
       <!-- footer -->
       <footer role="contentinfo">
-          &copy; Copyright 2016, Frank Liao.
+          &copy; Copyright 2016, nidata developers.
         Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
       </footer>
       <!-- /footer -->

@@ -130,9 +130,9 @@
 
 
 <div class="viewcode-block" id="FetcherError"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.FetcherError">[docs]</a><span class="k">class</span> <span class="nc">FetcherError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+    <span class="k">pass</span>
 
-
+</div>
 <span class="k">def</span> <span class="nf">_log</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
     <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
@@ -183,9 +183,9 @@
     <span class="k">if</span> <span class="n">all_skip</span><span class="p">:</span>
         <span class="n">_log</span><span class="p">(</span><span class="s">&quot;All files already in </span><span class="si">%s</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">folder</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">_log</span><span class="p">(</span><span class="s">&quot;Files successfully downloaded to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">folder</span><span class="p">))</span></div>
+        <span class="n">_log</span><span class="p">(</span><span class="s">&quot;Files successfully downloaded to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">folder</span><span class="p">))</span>
 
-
+</div>
 <div class="viewcode-block" id="fetch_scil_b0"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_scil_b0">[docs]</a><span class="k">def</span> <span class="nf">fetch_scil_b0</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Download b=0 datasets from multiple MR systems (GE, Philips, Siemens) and</span>
 <span class="sd">        different magnetic fields (1.5T and 3T)</span>
@@ -209,9 +209,9 @@
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">dipy_home</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset already in place. If you want to fetch again please first remove folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">dipy_home</span><span class="p">)</span></div>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset already in place. If you want to fetch again please first remove folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">dipy_home</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="read_scil_b0"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_scil_b0">[docs]</a><span class="k">def</span> <span class="nf">read_scil_b0</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Load GE 3T b0 image form the scil b0 dataset.</span>
 
@@ -226,9 +226,9 @@
                  <span class="s">&#39;GE&#39;</span><span class="p">,</span>
                  <span class="s">&#39;b0.nii.gz&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="read_siemens_scil_b0"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_siemens_scil_b0">[docs]</a><span class="k">def</span> <span class="nf">read_siemens_scil_b0</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Load Siemens 1.5T b0 image form the scil b0 dataset.</span>
 
@@ -243,9 +243,9 @@
                  <span class="s">&#39;Siemens&#39;</span><span class="p">,</span>
                  <span class="s">&#39;b0.nii.gz&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
 
-
+</div>
 <span class="k">def</span> <span class="nf">_get_file_md5</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the md5 checksum of a file&quot;&quot;&quot;</span>
     <span class="n">md5_data</span> <span class="o">=</span> <span class="n">md5</span><span class="p">()</span>
@@ -271,9 +271,9 @@
     <span class="k">if</span> <span class="n">stored_md5</span> <span class="o">!=</span> <span class="n">computed_md5</span><span class="p">:</span>
         <span class="k">print</span> <span class="p">(</span><span class="s">&quot;MD5 checksum of filename&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="s">&quot;failed. Expected MD5 was&quot;</span><span class="p">,</span> <span class="n">stored_md5</span><span class="p">,</span>
                <span class="s">&quot;but computed MD5 was&quot;</span><span class="p">,</span> <span class="n">computed_md5</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span>
-               <span class="s">&quot;Please check if the data has been downloaded correctly or if the upstream data has changed.&quot;</span><span class="p">)</span></div>
+               <span class="s">&quot;Please check if the data has been downloaded correctly or if the upstream data has changed.&quot;</span><span class="p">)</span>
 
-
+</div>
 <span class="k">def</span> <span class="nf">_get_file_data</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">))</span> <span class="k">as</span> <span class="n">opener</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data</span><span class="p">:</span>
@@ -308,9 +308,9 @@
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="read_isbi2013_2shell"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_isbi2013_2shell">[docs]</a><span class="k">def</span> <span class="nf">read_isbi2013_2shell</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Load ISBI 2013 2-shell synthetic dataset</span>
 
@@ -340,9 +340,9 @@
     <span class="kn">from</span> <span class="nn">dipy.core.gradients</span> <span class="kn">import</span> <span class="n">gradient_table</span>
     <span class="n">gtab</span> <span class="o">=</span> <span class="n">gradient_table</span><span class="p">(</span><span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span></div>
+    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span>
 
-
+</div>
 <div class="viewcode-block" id="fetch_sherbrooke_3shell"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_sherbrooke_3shell">[docs]</a><span class="k">def</span> <span class="nf">fetch_sherbrooke_3shell</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Download a 3shell HARDI dataset with 192 gradient directions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -371,9 +371,9 @@
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="read_sherbrooke_3shell"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_sherbrooke_3shell">[docs]</a><span class="k">def</span> <span class="nf">read_sherbrooke_3shell</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Load Sherbrooke 3-shell HARDI dataset</span>
 
@@ -402,9 +402,9 @@
     <span class="kn">from</span> <span class="nn">dipy.core.gradients</span> <span class="kn">import</span> <span class="n">gradient_table</span>
     <span class="n">gtab</span> <span class="o">=</span> <span class="n">gradient_table</span><span class="p">(</span><span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span></div>
+    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span>
 
-
+</div>
 <div class="viewcode-block" id="fetch_stanford_labels"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_stanford_labels">[docs]</a><span class="k">def</span> <span class="nf">fetch_stanford_labels</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Download reduced freesurfer aparc image from stanford web site.&quot;&quot;&quot;</span>
     <span class="n">folder</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">dipy_home</span><span class="p">,</span> <span class="s">&#39;stanford_hardi&#39;</span><span class="p">)</span>
@@ -416,9 +416,9 @@
     <span class="n">files</span><span class="p">[</span><span class="s">&quot;label-info.txt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;label_info.txt&quot;</span><span class="p">,</span>
                                <span class="s">&#39;39db9f0f5e173d7a2c2e51b07d5d711b&#39;</span><span class="p">)</span>
     <span class="n">fetch_data</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">files</span><span class="p">,</span> <span class="n">folder</span></div>
+    <span class="k">return</span> <span class="n">files</span><span class="p">,</span> <span class="n">folder</span>
 
-
+</div>
 <div class="viewcode-block" id="read_stanford_labels"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_stanford_labels">[docs]</a><span class="k">def</span> <span class="nf">read_stanford_labels</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Read stanford hardi data and label map&quot;&quot;&quot;</span>
     <span class="c"># First get the hardi data</span>
@@ -429,9 +429,9 @@
     <span class="n">files</span><span class="p">,</span> <span class="n">folder</span> <span class="o">=</span> <span class="n">fetch_stanford_labels</span><span class="p">()</span>
     <span class="n">labels_file</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&quot;aparc-reduced.nii.gz&quot;</span><span class="p">)</span>
     <span class="n">labels_img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">labels_file</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">hard_img</span><span class="p">,</span> <span class="n">gtab</span><span class="p">,</span> <span class="n">labels_img</span></div>
+    <span class="k">return</span> <span class="n">hard_img</span><span class="p">,</span> <span class="n">gtab</span><span class="p">,</span> <span class="n">labels_img</span>
 
-
+</div>
 <div class="viewcode-block" id="fetch_stanford_hardi"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_stanford_hardi">[docs]</a><span class="k">def</span> <span class="nf">fetch_stanford_hardi</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Download a HARDI dataset with 160 gradient directions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -460,9 +460,9 @@
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="read_stanford_hardi"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_stanford_hardi">[docs]</a><span class="k">def</span> <span class="nf">read_stanford_hardi</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Load Stanford HARDI dataset</span>
 
@@ -491,9 +491,9 @@
     <span class="kn">from</span> <span class="nn">dipy.core.gradients</span> <span class="kn">import</span> <span class="n">gradient_table</span>
     <span class="n">gtab</span> <span class="o">=</span> <span class="n">gradient_table</span><span class="p">(</span><span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span></div>
+    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span>
 
-
+</div>
 <div class="viewcode-block" id="fetch_stanford_t1"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_stanford_t1">[docs]</a><span class="k">def</span> <span class="nf">fetch_stanford_t1</span><span class="p">():</span>
     <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://stacks.stanford.edu/file/druid:yx282xq2090/&#39;</span>
     <span class="n">url_t1</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;t1.nii.gz&#39;</span>
@@ -501,16 +501,16 @@
     <span class="n">file_md5</span> <span class="o">=</span> <span class="s">&#39;a6a140da6a947d4131b2368752951b0a&#39;</span>
     <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;t1.nii.gz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">url_t1</span><span class="p">,</span> <span class="n">file_md5</span><span class="p">)}</span>
     <span class="n">fetch_data</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">files</span><span class="p">,</span> <span class="n">folder</span></div>
+    <span class="k">return</span> <span class="n">files</span><span class="p">,</span> <span class="n">folder</span>
 
-
+</div>
 <div class="viewcode-block" id="read_stanford_t1"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_stanford_t1">[docs]</a><span class="k">def</span> <span class="nf">read_stanford_t1</span><span class="p">():</span>
     <span class="n">files</span><span class="p">,</span> <span class="n">folder</span> <span class="o">=</span> <span class="n">fetch_stanford_t1</span><span class="p">()</span>
     <span class="n">f_t1</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;t1.nii.gz&#39;</span><span class="p">)</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f_t1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">img</span></div>
+    <span class="k">return</span> <span class="n">img</span>
 
-
+</div>
 <div class="viewcode-block" id="fetch_stanford_pve_maps"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_stanford_pve_maps">[docs]</a><span class="k">def</span> <span class="nf">fetch_stanford_pve_maps</span><span class="p">():</span>
     <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://stacks.stanford.edu/file/druid:yx282xq2090/&#39;</span>
     <span class="n">url_pve_csf</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;pve_csf.nii.gz&#39;</span>
@@ -524,9 +524,9 @@
              <span class="s">&quot;pve_gm.nii.gz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">url_pve_gm</span><span class="p">,</span> <span class="n">file_gm_md5</span><span class="p">),</span>
              <span class="s">&quot;pve_wm.nii.gz&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">url_pve_wm</span><span class="p">,</span> <span class="n">file_wm_md5</span><span class="p">)}</span>
     <span class="n">fetch_data</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">files</span><span class="p">,</span> <span class="n">folder</span></div>
+    <span class="k">return</span> <span class="n">files</span><span class="p">,</span> <span class="n">folder</span>
 
-
+</div>
 <div class="viewcode-block" id="read_stanford_pve_maps"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_stanford_pve_maps">[docs]</a><span class="k">def</span> <span class="nf">read_stanford_pve_maps</span><span class="p">():</span>
     <span class="n">files</span><span class="p">,</span> <span class="n">folder</span> <span class="o">=</span> <span class="n">fetch_stanford_pve_maps</span><span class="p">()</span>
     <span class="n">f_pve_csf</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;pve_csf.nii.gz&#39;</span><span class="p">)</span>
@@ -535,9 +535,9 @@
     <span class="n">img_pve_csf</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f_pve_csf</span><span class="p">)</span>
     <span class="n">img_pve_gm</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f_pve_gm</span><span class="p">)</span>
     <span class="n">img_pve_wm</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f_pve_wm</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">img_pve_csf</span><span class="p">,</span> <span class="n">img_pve_gm</span><span class="p">,</span> <span class="n">img_pve_wm</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">img_pve_csf</span><span class="p">,</span> <span class="n">img_pve_gm</span><span class="p">,</span> <span class="n">img_pve_wm</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="fetch_taiwan_ntu_dsi"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_taiwan_ntu_dsi">[docs]</a><span class="k">def</span> <span class="nf">fetch_taiwan_ntu_dsi</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Download a DSI dataset with 203 gradient directions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -571,9 +571,9 @@
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;http://dsi-studio.labsolver.org&#39;</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="read_taiwan_ntu_dsi"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_taiwan_ntu_dsi">[docs]</a><span class="k">def</span> <span class="nf">read_taiwan_ntu_dsi</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Load Taiwan NTU dataset</span>
 
@@ -605,9 +605,9 @@
     <span class="kn">from</span> <span class="nn">dipy.core.gradients</span> <span class="kn">import</span> <span class="n">gradient_table</span>
     <span class="n">gtab</span> <span class="o">=</span> <span class="n">gradient_table</span><span class="p">(</span><span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">nib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span></div>
+    <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">gtab</span>
 
-
+</div>
 <div class="viewcode-block" id="fetch_syn_data"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.fetch_syn_data">[docs]</a><span class="k">def</span> <span class="nf">fetch_syn_data</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Download t1 and b0 volumes from the same session</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -635,9 +635,9 @@
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Done.&#39;</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Files copied in folder </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span></div>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Dataset is already in place. If you want to fetch it again, please first remove the folder </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">folder</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="read_syn_data"><a class="viewcode-back" href="../../nidata.diffusion.html#nidata.diffusion.read_syn_data">[docs]</a><span class="k">def</span> <span class="nf">read_syn_data</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Load t1 and b0 volumes from the same session</span>
 
@@ -713,7 +713,7 @@
 
       <!-- footer -->
       <footer role="contentinfo">
-          &copy; Copyright 2016, Frank Liao.
+          &copy; Copyright 2016, nidata developers.
         Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
       </footer>
       <!-- /footer -->

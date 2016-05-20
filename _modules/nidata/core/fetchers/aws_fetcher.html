@@ -124,9 +124,9 @@
 
 <div class="viewcode-block" id="test_cb"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.aws_fetcher.test_cb">[docs]</a><span class="k">def</span> <span class="nf">test_cb</span><span class="p">(</span><span class="n">cur_bytes</span><span class="p">,</span> <span class="n">total_bytes</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">chunk_report</span><span class="p">(</span><span class="n">bytes_so_far</span><span class="o">=</span><span class="n">cur_bytes</span><span class="p">,</span> <span class="n">total_size</span><span class="o">=</span><span class="n">total_bytes</span><span class="p">,</span>
-                        <span class="n">initial_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">)</span></div>
+                        <span class="n">initial_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="AmazonS3Fetcher"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.aws_fetcher.AmazonS3Fetcher">[docs]</a><span class="k">class</span> <span class="nc">AmazonS3Fetcher</span><span class="p">(</span><span class="n">Fetcher</span><span class="p">):</span>
     <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;boto&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">Fetcher</span><span class="o">.</span><span class="n">dependencies</span>
 
@@ -252,7 +252,7 @@
 
       <!-- footer -->
       <footer role="contentinfo">
-          &copy; Copyright 2016, Frank Liao.
+          &copy; Copyright 2016, nidata developers.
         Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
       </footer>
       <!-- /footer -->

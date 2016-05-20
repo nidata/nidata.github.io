@@ -131,9 +131,9 @@
     <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
         <span class="k">return</span> <span class="s">&quot;</span><span class="si">%4.1f</span><span class="s">min&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="mf">60.</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s">&quot; </span><span class="si">%5.1f</span><span class="s">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s">&quot; </span><span class="si">%5.1f</span><span class="s">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
-
+</div>
 <div class="viewcode-block" id="md5_sum_file"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.base.md5_sum_file">[docs]</a><span class="k">def</span> <span class="nf">md5_sum_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Calculates the MD5 sum of a file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -144,9 +144,9 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
                 <span class="k">break</span>
             <span class="n">m</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
 
-
+</div>
 <div class="viewcode-block" id="readmd5_sum_file"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.base.readmd5_sum_file">[docs]</a><span class="k">def</span> <span class="nf">readmd5_sum_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Reads a MD5 checksum file and returns hashes as a dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -158,9 +158,9 @@
                 <span class="k">break</span>
             <span class="n">h</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;  &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">hashes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">h</span>
-    <span class="k">return</span> <span class="n">hashes</span></div>
+    <span class="k">return</span> <span class="n">hashes</span>
 
-
+</div>
 <span class="k">def</span> <span class="nf">_filter_column</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">criteria</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Return index array matching criteria</span>
 
@@ -236,9 +236,9 @@
 
     <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">fcomb</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">_filter_column</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">filters</span><span class="p">[</span><span class="n">column</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">mask</span></div>
+    <span class="k">return</span> <span class="n">mask</span>
 
-
+</div>
 <div class="viewcode-block" id="chunk_report"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.base.chunk_report">[docs]</a><span class="k">def</span> <span class="nf">chunk_report</span><span class="p">(</span><span class="n">bytes_so_far</span><span class="p">,</span> <span class="n">total_size</span><span class="p">,</span> <span class="n">initial_size</span><span class="p">,</span> <span class="n">t0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Show downloading percentage.</span>
 
@@ -278,9 +278,9 @@
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
             <span class="s">&quot;Downloaded </span><span class="si">%d</span><span class="s"> of </span><span class="si">%d</span><span class="s"> bytes (</span><span class="si">%0.2f%%</span><span class="s">, </span><span class="si">%s</span><span class="s"> remaining)  </span><span class="se">\r</span><span class="s">&quot;</span>
             <span class="o">%</span> <span class="p">(</span><span class="n">bytes_so_far</span><span class="p">,</span> <span class="n">total_size</span><span class="p">,</span> <span class="n">total_percent</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
-               <span class="n">format_time</span><span class="p">(</span><span class="n">time_remaining</span><span class="p">)))</span></div>
+               <span class="n">format_time</span><span class="p">(</span><span class="n">time_remaining</span><span class="p">)))</span>
 
-
+</div>
 <div class="viewcode-block" id="Fetcher"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.base.Fetcher">[docs]</a><span class="k">class</span> <span class="nc">Fetcher</span><span class="p">(</span><span class="n">ClassWithDependencies</span><span class="p">):</span>
     <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -316,8 +316,8 @@
                 <span class="n">out_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unexpected format: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">out_files</span></div>
-
+        <span class="k">return</span> <span class="n">out_files</span>
+</div>
 <div class="viewcode-block" id="Fetcher.fetch"><a class="viewcode-back" href="../../../../nidata.core.fetchers.html#nidata.core.fetchers.base.Fetcher.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
 </pre></div>
@@ -372,7 +372,7 @@
 
       <!-- footer -->
       <footer role="contentinfo">
-          &copy; Copyright 2016, Frank Liao.
+          &copy; Copyright 2016, nidata developers.
         Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
       </footer>
       <!-- /footer -->
